@@ -1,14 +1,26 @@
-import { Form, Modal, Input, Icon, message, Table, Button, Cascader, DatePicker, Upload, Radio, InputNumber, Select, Drawer, Divider } from 'antd';
+function __$styleInject(css) {
+    if (!css) return;
+
+    if (typeof window == 'undefined') return;
+    var style = document.createElement('style');
+    style.setAttribute('media', 'screen');
+
+    style.innerHTML = css;
+    document.head.appendChild(style);
+    return css;
+}
+
+import { Form, Modal, Input, message, Table, Button, Cascader, DatePicker, Upload, Radio, InputNumber, Select, Drawer, Divider } from 'antd';
 import React, { useState, useEffect, useCallback } from 'react';
 import useActiveRoute from 'src/hooks/useActiveRoute';
 import api from 'src/utils/api';
 import { tableOrder } from 'src/utils/tableUtil';
+import { LockOutlined, LoadingOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import { formLayout, formItemHide } from 'src/utils/const';
 import useTableFetch$1 from 'src/hooks/useTableFetch';
 import usePageForm from 'src/hooks/usePageForm';
 import { deepClone } from 'src/utils/common';
 import 'braft-editor/dist/index.css';
-import { LoadingOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import BraftEditor from 'braft-editor';
 import { ContentUtils } from 'braft-utils';
 import { apiBaseImg, apiBaseFile } from 'src/config';
@@ -338,6 +350,8 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
+__$styleInject(".change-password .ant-modal-body {\n  padding: 24px 60px;\n}\n.change-password .ant-modal-body .ant-form-item {\n  margin-bottom: 10px;\n}\n.change-password .ant-modal-body .ant-form-item-label {\n  margin-right: 20px;\n}\n");
+
 var ChangePassword = function ChangePassword(_ref) {
   var setVisible = _ref.setVisible,
       user = _ref.user;
@@ -406,9 +420,7 @@ var ChangePassword = function ChangePassword(_ref) {
     }],
     hasFeedback: true
   }, /*#__PURE__*/React.createElement(Input.Password, {
-    prefix: /*#__PURE__*/React.createElement(Icon, {
-      type: "lock"
-    }),
+    prefix: /*#__PURE__*/React.createElement(LockOutlined, null),
     placeholder: "\u8BF7\u8F93\u5165\u65B0\u5BC6\u7801"
   }))));
 };
@@ -493,6 +505,8 @@ var _showTotal = function _showTotal(total, rowSelection) {
     }
   }, "\u6E05\u7A7A")) : null, /*#__PURE__*/React.createElement("div", null, "\u5171".concat(total, "\u6761")));
 };
+
+__$styleInject(".list-header {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n}\n.list-header-right input {\n  margin-right: 15px;\n}\n");
 
 var ListHeader = function ListHeader(_ref) {
   var _defaultSearch$keywor;
@@ -600,6 +614,8 @@ var FormDate = function FormDate(_ref) {
     disabledDate: disabledDate
   }));
 };
+
+__$styleInject(".form-editor {\n  display: flex;\n  margin: 0 50px 20px 50px;\n}\n.form-editor > span {\n  min-width: 60px;\n}\n.form-editor .bf-container {\n  border: 1px solid #d9d9d9;\n}\n.form-editor .ant-row {\n  width: 0;\n}\n");
 
 var FormEditor = function FormEditor(_ref) {
   var form = _ref.form,
@@ -978,6 +994,8 @@ var FormInput = function FormInput(_ref) {
     type: type
   }, rest)));
 };
+
+__$styleInject(".form-input-number {\n  width: 100%;\n}\n");
 
 var _excluded$1 = ["label", "name", "required", "type", "suffix", "rules"];
 
@@ -1604,6 +1622,8 @@ var PageList = function PageList(_ref) {
     user: selectedEntityPwd
   }));
 };
+
+__$styleInject(".error-boundary {\n  width: calc(100% - 254px);\n  height: 100%;\n  display: flex;\n  align-items: center;\n  flex-direction: column;\n  justify-content: center;\n}\n.error-boundary h2 {\n  margin-top: 20px;\n  margin-left: 28px;\n}\n");
 
 var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
   _inherits(ErrorBoundary, _React$Component);

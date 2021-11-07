@@ -4,9 +4,9 @@
     "./dist"
   ],
   "repository": "https://github.com/gandalfTheBlue/admin-components",
-  "version": "0.1.8",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "version": "0.1.15",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "source": "src/index.js",
   "dependencies": {
     "react-scripts": "3.4.3"

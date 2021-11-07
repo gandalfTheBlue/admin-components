@@ -1,6 +1,7 @@
 import './ChangePassword.less'
 
-import { Form, Icon, Input, message, Modal } from 'antd'
+import { LockOutlined } from '@ant-design/icons'
+import { Form, Input, message, Modal } from 'antd'
 import React from 'react'
 import useActiveRoute from 'src/hooks/useActiveRoute'
 import api from 'src/utils/api'
@@ -37,7 +38,7 @@ const ChangePassword = ({ setVisible, user }) => {
           hasFeedback
         >
           <Input.Password
-            prefix={<Icon type="lock" />}
+            prefix={<LockOutlined />}
             placeholder="请输入新密码"
           />
         </Form.Item>

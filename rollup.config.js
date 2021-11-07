@@ -7,10 +7,7 @@ import pkg from './package.json'
 
 export default {
   input: pkg.source,
-  output: [
-    { file: pkg.main, format: 'cjs' },
-    { file: pkg.module, format: 'esm' },
-  ],
+  output: [{ file: pkg.module, format: 'esm' }],
   plugins: [
     external(),
     babel({
@@ -18,7 +15,7 @@ export default {
       babelHelpers: 'bundled',
     }),
     del({ targets: ['dist/*'] }),
-    less({ output: 'dist/admin-components.css' }),
+    less({ insert: true, output: 'dist/index.css' }),
   ],
   external: Object.keys(pkg.peerDependencies || {}),
 }
