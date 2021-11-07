@@ -1,2 +1,4 @@
-export { default as HelloWorld } from './components/HelloWorld';
-export { default as SignIn } from './components/SignIn';
+import AdminAvatar from './components/Avatar'
+import BackBtn from './components/BackBtn'
+
+export { AdminAvatar, BackBtn }
