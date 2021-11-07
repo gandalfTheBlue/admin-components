@@ -1,4 +1,45 @@
-.back-btn {
-  position: absolute;
-  top: 10px;
+.error-boundary {
+  width: calc(100% - 254px);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.error-boundary h2 {
+  margin-top: 20px;
+  margin-left: 28px;
+}
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.list-header-right input {
+  margin-right: 15px;
+}
+.change-password .ant-modal-body {
+  padding: 24px 60px;
+}
+.change-password .ant-modal-body .ant-form-item {
+  margin-bottom: 10px;
+}
+.change-password .ant-modal-body .ant-form-item-label {
+  margin-right: 20px;
+}
+.form-editor {
+  display: flex;
+  margin: 0 50px 20px 50px;
+}
+.form-editor > span {
+  min-width: 60px;
+}
+.form-editor .bf-container {
+  border: 1px solid #d9d9d9;
+}
+.form-editor .ant-row {
+  width: 0;
+}
+.form-input-number {
+  width: 100%;
 }

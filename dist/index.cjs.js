@@ -4,40 +4,1681 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var antd = require('antd');
 var React = require('react');
+var useActiveRoute = require('src/hooks/useActiveRoute');
+var api = require('src/utils/api');
+var tableUtil = require('src/utils/tableUtil');
+var _const = require('src/utils/const');
+var useTableFetch$1 = require('src/hooks/useTableFetch');
+var usePageForm = require('src/hooks/usePageForm');
 var common = require('src/utils/common');
+require('braft-editor/dist/index.css');
+var icons = require('@ant-design/icons');
+var BraftEditor = require('braft-editor');
+var braftUtils = require('braft-utils');
+var config = require('src/config');
+require('antd/es/modal/style');
+require('antd/es/slider/style');
 var reactRouter = require('react-router');
+var errorPage = require('src/images/error-page.svg');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
+var useActiveRoute__default = /*#__PURE__*/_interopDefaultLegacy(useActiveRoute);
+var api__default = /*#__PURE__*/_interopDefaultLegacy(api);
+var useTableFetch__default = /*#__PURE__*/_interopDefaultLegacy(useTableFetch$1);
+var usePageForm__default = /*#__PURE__*/_interopDefaultLegacy(usePageForm);
+var BraftEditor__default = /*#__PURE__*/_interopDefaultLegacy(BraftEditor);
+var errorPage__default = /*#__PURE__*/_interopDefaultLegacy(errorPage);
 
-var AdminAvatar = function AdminAvatar(_ref) {
-  var src = _ref.src,
-      shape = _ref.shape,
-      size = _ref.size;
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
 
-  if (!src) {
-    return null;
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+
+    if (enumerableOnly) {
+      symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+    }
+
+    keys.push.apply(keys, symbols);
   }
 
-  return /*#__PURE__*/React__default["default"].createElement(antd.Avatar, {
-    shape: shape,
-    size: size,
-    src: "".concat(common.getDomain()).concat(src)
-  });
-};
+  return keys;
+}
 
-var BackBtn = function BackBtn(_ref) {
-  var back = _ref.back;
-  var history = reactRouter.useHistory();
-  return /*#__PURE__*/React__default["default"].createElement(antd.Button, {
-    className: "back-btn",
-    type: "primary",
-    onClick: function onClick() {
-      return history.push(back);
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
     }
-  }, "\u8FD4\u56DE");
+  }
+
+  return target;
+}
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+
+  try {
+    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
+    return call;
+  } else if (call !== void 0) {
+    throw new TypeError("Derived constructors may only return object or undefined");
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _createSuper(Derived) {
+  var hasNativeReflectConstruct = _isNativeReflectConstruct();
+
+  return function _createSuperInternal() {
+    var Super = _getPrototypeOf(Derived),
+        result;
+
+    if (hasNativeReflectConstruct) {
+      var NewTarget = _getPrototypeOf(this).constructor;
+
+      result = Reflect.construct(Super, arguments, NewTarget);
+    } else {
+      result = Super.apply(this, arguments);
+    }
+
+    return _possibleConstructorReturn(this, result);
+  };
+}
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+}
+
+function _iterableToArrayLimit(arr, i) {
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+  if (_i == null) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+
+  var _s, _e;
+
+  try {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+var ChangePassword = function ChangePassword(_ref) {
+  var setVisible = _ref.setVisible,
+      user = _ref.user;
+
+  var _useActiveRoute = useActiveRoute__default["default"](),
+      apiPath = _useActiveRoute.apiPath;
+
+  var _Form$useForm = antd.Form.useForm(),
+      _Form$useForm2 = _slicedToArray(_Form$useForm, 1),
+      form = _Form$useForm2[0];
+
+  var handleOk = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var _yield$form$validateF, password;
+
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return form.validateFields(['password']);
+
+            case 2:
+              _yield$form$validateF = _context.sent;
+              password = _yield$form$validateF.password;
+              _context.next = 6;
+              return api__default["default"].post("".concat(apiPath, "/changePsw?id=").concat(user.id, "&psw=").concat(password));
+
+            case 6:
+              antd.message.success('密码修改成功。');
+              setVisible(false);
+
+            case 8:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function handleOk() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+
+  return /*#__PURE__*/React__default["default"].createElement(antd.Modal, {
+    wrapClassName: "change-password",
+    visible: true,
+    onOk: handleOk,
+    onCancel: function onCancel() {
+      return setVisible(false);
+    },
+    cancelText: "\u53D6\u6D88",
+    okText: "\u786E\u5B9A"
+  }, /*#__PURE__*/React__default["default"].createElement(antd.Form, _extends({}, _const.formLayout, {
+    className: "change-password-form",
+    form: form
+  }), /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    label: "\u7528\u6237\u540D\u79F0"
+  }, /*#__PURE__*/React__default["default"].createElement("span", null, user.username)), /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    name: "password",
+    label: "\u65B0\u5BC6\u7801",
+    rules: [{
+      required: true,
+      min: 6
+    }],
+    hasFeedback: true
+  }, /*#__PURE__*/React__default["default"].createElement(antd.Input.Password, {
+    prefix: /*#__PURE__*/React__default["default"].createElement(antd.Icon, {
+      type: "lock"
+    }),
+    placeholder: "\u8BF7\u8F93\u5165\u65B0\u5BC6\u7801"
+  }))));
 };
 
-exports.AdminAvatar = AdminAvatar;
-exports.BackBtn = BackBtn;
+var _excluded$3 = ["pagination", "fetchTable", "showPagination", "showRowSelection", "rowSelection", "defaultPageSize", "pageSizeOptions", "refreshInterval"];
+
+var CustomTable = function CustomTable(_ref) {
+  var pagination = _ref.pagination,
+      fetchTable = _ref.fetchTable,
+      _ref$showPagination = _ref.showPagination,
+      showPagination = _ref$showPagination === void 0 ? true : _ref$showPagination,
+      _ref$showRowSelection = _ref.showRowSelection,
+      showRowSelection = _ref$showRowSelection === void 0 ? false : _ref$showRowSelection,
+      rowSelection = _ref.rowSelection,
+      defaultPageSize = _ref.defaultPageSize,
+      pageSizeOptions = _ref.pageSizeOptions,
+      refreshInterval = _ref.refreshInterval,
+      tableProps = _objectWithoutProperties(_ref, _excluded$3);
+
+  rowSelection = showRowSelection ? rowSelection : null;
+  var finalPagination;
+
+  if (pagination) {
+    finalPagination = _objectSpread2(_objectSpread2({}, pagination), {}, {
+      showTotal: function showTotal(totalNum) {
+        return _showTotal(totalNum, rowSelection);
+      }
+    });
+
+    if (pageSizeOptions) {
+      finalPagination.pageSizeOptions = pageSizeOptions;
+    }
+  }
+
+  React__default["default"].useEffect(function () {
+    if (defaultPageSize) {
+      fetchTable({
+        __updateDefaultPageSize__: defaultPageSize
+      });
+    }
+  }, [defaultPageSize, fetchTable]);
+  React__default["default"].useEffect(function () {
+    if (!showPagination) {
+      fetchTable({
+        __updateHasPagination__: false
+      });
+    }
+  }, [showPagination, fetchTable]);
+  React__default["default"].useEffect(function () {
+    if (refreshInterval) {
+      fetchTable({
+        __updateRefreshInterval__: refreshInterval
+      });
+    }
+  }, [refreshInterval, fetchTable]);
+  return /*#__PURE__*/React__default["default"].createElement(antd.Table, _extends({}, tableProps, {
+    loading: false,
+    bordered: true,
+    rowSelection: rowSelection,
+    pagination: pagination && finalPagination,
+    onChange: function onChange(paginator, filters) {
+      return fetchTable({
+        __tableChange__: {
+          paginator: paginator,
+          filters: filters
+        }
+      });
+    }
+  }));
+};
+
+CustomTable.useTableFetch = useTableFetch__default["default"];
+
+var _showTotal = function _showTotal(total, rowSelection) {
+  return /*#__PURE__*/React__default["default"].createElement("div", {
+    className: "ant-pagation-total"
+  }, rowSelection ? /*#__PURE__*/React__default["default"].createElement("div", {
+    className: "ant-pagation-total-selected"
+  }, "\u5DF2\u9009\u62E9", /*#__PURE__*/React__default["default"].createElement("span", null, " ".concat(rowSelection.selectedRowKeys && rowSelection.selectedRowKeys.length || 0, "/").concat(total, " ")), "\u9879 ", /*#__PURE__*/React__default["default"].createElement("a", {
+    onClick: function onClick() {
+      return rowSelection.onChange([], []);
+    }
+  }, "\u6E05\u7A7A")) : null, /*#__PURE__*/React__default["default"].createElement("div", null, "\u5171".concat(total, "\u6761")));
+};
+
+var ListHeader = function ListHeader(_ref) {
+  var _defaultSearch$keywor;
+
+  var fetchTable = _ref.fetchTable,
+      defaultSearch = _ref.search,
+      _ref$placeholder = _ref.placeholder,
+      placeholder = _ref$placeholder === void 0 ? '请输入查询条件' : _ref$placeholder,
+      showAdd = _ref.showAdd,
+      addCallback = _ref.addCallback,
+      deleteCallback = _ref.deleteCallback;
+
+  var _useState = React.useState((_defaultSearch$keywor = defaultSearch === null || defaultSearch === void 0 ? void 0 : defaultSearch.keyword) !== null && _defaultSearch$keywor !== void 0 ? _defaultSearch$keywor : ''),
+      _useState2 = _slicedToArray(_useState, 2),
+      search = _useState2[0],
+      setSearch = _useState2[1];
+
+  var handleSearch = function handleSearch() {
+    fetchTable({
+      keyword: search
+    });
+  };
+
+  var clearSearch = function clearSearch() {
+    setSearch('');
+    fetchTable({
+      keyword: ''
+    });
+  };
+
+  var handleAdd = function handleAdd() {
+    addCallback && addCallback();
+  };
+
+  var handleDelete = function handleDelete() {
+    deleteCallback && deleteCallback();
+  };
+
+  return /*#__PURE__*/React__default["default"].createElement("div", {
+    className: "list-header"
+  }, /*#__PURE__*/React__default["default"].createElement("div", null, /*#__PURE__*/React__default["default"].createElement(antd.Button, {
+    type: "primary",
+    onClick: handleAdd,
+    style: {
+      visibility: showAdd ? 'visible' : 'hidden'
+    }
+  }, "\u65B0\u589E"), /*#__PURE__*/React__default["default"].createElement(antd.Button, {
+    onClick: handleDelete,
+    style: {
+      visibility: deleteCallback ? 'visible' : 'hidden',
+      marginLeft: 10
+    }
+  }, "\u6279\u91CF\u5220\u9664")), /*#__PURE__*/React__default["default"].createElement("div", {
+    className: "list-header-right"
+  }, /*#__PURE__*/React__default["default"].createElement(antd.Input, {
+    value: search,
+    onChange: function onChange(e) {
+      return setSearch(e.target.value);
+    },
+    onPressEnter: handleSearch,
+    placeholder: placeholder,
+    style: {
+      width: 220
+    }
+  }), /*#__PURE__*/React__default["default"].createElement(antd.Button, {
+    className: "mr-10",
+    onClick: handleSearch
+  }, "\u641C\u7D22"), /*#__PURE__*/React__default["default"].createElement(antd.Button, {
+    onClick: clearSearch
+  }, "\u6E05\u7A7A")));
+};
+
+var FormCascader = function FormCascader(_ref) {
+  var label = _ref.label,
+      name = _ref.name,
+      required = _ref.required,
+      initialValue = _ref.initialValue,
+      options = _ref.options;
+  var message = "\u8BF7\u9009\u62E9".concat(label);
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    rules: [{
+      required: required !== null && required !== void 0 ? required : true,
+      message: message
+    }],
+    label: label,
+    name: name,
+    initialValue: initialValue
+  }, /*#__PURE__*/React__default["default"].createElement(antd.Cascader, {
+    options: options,
+    placeholder: message
+  }));
+};
+
+var FormDate = function FormDate(_ref) {
+  var label = _ref.label,
+      name = _ref.name,
+      disabledDate = _ref.disabledDate;
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    label: label,
+    name: name,
+    rules: [{
+      required: true
+    }]
+  }, /*#__PURE__*/React__default["default"].createElement(antd.DatePicker, {
+    disabledDate: disabledDate
+  }));
+};
+
+var FormEditor = function FormEditor(_ref) {
+  var form = _ref.form,
+      label = _ref.label,
+      name = _ref.name,
+      initialValue = _ref.initialValue,
+      _ref$maxSize = _ref.maxSize,
+      maxSize = _ref$maxSize === void 0 ? 100 : _ref$maxSize;
+
+  var _useState = React.useState(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      isUploading = _useState2[0],
+      setIsUploading = _useState2[1];
+
+  var _useState3 = React.useState(BraftEditor__default["default"].createEditorState(initialValue)),
+      _useState4 = _slicedToArray(_useState3, 2),
+      editorState = _useState4[0],
+      setEditorState = _useState4[1];
+
+  var handleEditorChange = function handleEditorChange(editorState) {
+    setEditorState(editorState);
+    form.setFieldsValue(_defineProperty({}, name, editorState.toHTML()));
+  };
+
+  var uploadHandler = function uploadHandler(_ref2) {
+    var file = _ref2.file;
+    setIsUploading(file.status === 'uploading');
+
+    if (file.status === 'done') {
+      var type = '';
+
+      if (file.type.startsWith('image')) {
+        type = 'IMAGE';
+      }
+
+      if (file.type.startsWith('video')) {
+        type = 'VIDEO';
+      }
+
+      if (file.type.startsWith('audio')) {
+        type = 'AUDIO';
+      }
+
+      setEditorState(braftUtils.ContentUtils.insertMedias(editorState, [{
+        type: type,
+        url: file.response.data.url
+      }]));
+    }
+  };
+
+  function _beforeUpload(file) {
+    if (file.size > maxSize * 1024 * 1024) {
+      antd.message.error("\u5A92\u4F53\u6587\u4EF6\u5927\u5C0F\u4E0D\u80FD\u8D85\u8FC7".concat(maxSize, "M"));
+      return Promise.reject();
+    }
+
+    return true;
+  }
+
+  var extendControls = [{
+    key: 'antd-uploader',
+    type: 'component',
+    component: /*#__PURE__*/React__default["default"].createElement(antd.Upload, {
+      accept: "image/png,image/jpg,image/gif,image/jpeg, audio/*, video/*",
+      showUploadList: false,
+      action: config.apiBaseImg,
+      onChange: uploadHandler,
+      disabled: isUploading,
+      beforeUpload: function beforeUpload(file) {
+        return _beforeUpload(file);
+      }
+    }, /*#__PURE__*/React__default["default"].createElement("button", {
+      type: "button",
+      className: "control-item button upload-button"
+    }, !isUploading && /*#__PURE__*/React__default["default"].createElement("span", null, "\u63D2\u5165\u56FE\u7247/\u97F3\u89C6\u9891"), isUploading && /*#__PURE__*/React__default["default"].createElement("span", null, /*#__PURE__*/React__default["default"].createElement(icons.LoadingOutlined, null), "\u6587\u4EF6\u4E0A\u4F20\u4E2D")))
+  }];
+  return /*#__PURE__*/React__default["default"].createElement("div", {
+    className: "form-editor"
+  }, /*#__PURE__*/React__default["default"].createElement("span", null, label, ": "), /*#__PURE__*/React__default["default"].createElement(BraftEditor__default["default"], {
+    value: editorState,
+    onChange: handleEditorChange,
+    extendControls: extendControls,
+    excludeControls: ['media']
+  }), /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    label: label,
+    name: name,
+    style: {
+      visibility: 'hidden',
+      width: 0
+    }
+  }));
+};
+
+var FormEnableRadio = function FormEnableRadio(_ref) {
+  var label = _ref.label,
+      name = _ref.name,
+      _ref$initialValue = _ref.initialValue,
+      initialValue = _ref$initialValue === void 0 ? true : _ref$initialValue;
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    initialValue: initialValue,
+    rules: [{
+      required: true
+    }],
+    label: label !== null && label !== void 0 ? label : '启用',
+    name: name !== null && name !== void 0 ? name : 'isEnable'
+  }, /*#__PURE__*/React__default["default"].createElement(antd.Radio.Group, null, /*#__PURE__*/React__default["default"].createElement(antd.Radio, {
+    value: true
+  }, "\u662F"), /*#__PURE__*/React__default["default"].createElement(antd.Radio, {
+    value: false
+  }, "\u5426")));
+};
+
+var FileUpload = function FileUpload(_ref) {
+  var callback = _ref.callback,
+      accept = _ref.accept,
+      fileUrl = _ref.fileUrl;
+
+  var _useState = React.useState([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      fileList = _useState2[0],
+      setFileList = _useState2[1];
+
+  React.useEffect(function () {
+    if (fileUrl) {
+      setFileList([{
+        url: fileUrl,
+        name: fileUrl,
+        status: 'done'
+      }]);
+    }
+  }, [fileUrl]);
+  var props = {
+    accept: accept,
+    name: 'file',
+    maxCount: 1,
+    action: config.apiBaseFile,
+    onChange: function onChange(info) {
+      setFileList(info.fileList);
+
+      if (info.file.status === 'done') {
+        callback(info.file.response.data.url);
+      }
+    }
+  };
+  return /*#__PURE__*/React__default["default"].createElement(antd.Upload, _extends({}, props, {
+    fileList: fileList
+  }), /*#__PURE__*/React__default["default"].createElement(antd.Button, {
+    icon: /*#__PURE__*/React__default["default"].createElement(icons.UploadOutlined, null)
+  }, "\u70B9\u51FB\u4E0A\u4F20"));
+};
+
+var FormFile = function FormFile(_ref) {
+  var form = _ref.form,
+      label = _ref.label,
+      name = _ref.name,
+      message = _ref.message,
+      fileUrl = _ref.fileUrl,
+      _ref$required = _ref.required,
+      required = _ref$required === void 0 ? true : _ref$required,
+      _ref$accept = _ref.accept,
+      accept = _ref$accept === void 0 ? '*' : _ref$accept;
+
+  var _useState = React.useState(),
+      _useState2 = _slicedToArray(_useState, 2),
+      url = _useState2[0],
+      setUrl = _useState2[1];
+
+  React.useEffect(function () {
+    setUrl(fileUrl);
+  }, [fileUrl]);
+
+  var handleFileChange = function handleFileChange(fileUrl) {
+    form.setFieldsValue(_defineProperty({}, name, fileUrl));
+  };
+
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    rules: [{
+      required: required,
+      message: message
+    }],
+    label: label,
+    name: name,
+    shouldUpdate: function shouldUpdate() {
+      setUrl(form.getFieldValue(name));
+    }
+  }, /*#__PURE__*/React__default["default"].createElement(FileUpload, {
+    callback: handleFileChange,
+    fileUrl: url,
+    accept: accept
+  }));
+};
+
+function getBase64(img, callback) {
+  var reader = new FileReader();
+  reader.addEventListener('load', function () {
+    return callback(reader.result);
+  });
+  reader.readAsDataURL(img);
+}
+
+function _beforeUpload(file, callback) {
+  var isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+
+  if (!isJpgOrPng) {
+    callback({
+      valid: false,
+      message: '请上传JPG或PNG格式的照片'
+    });
+    return false;
+  }
+
+  return true;
+}
+
+var ImageUpload = /*#__PURE__*/function (_React$Component) {
+  _inherits(ImageUpload, _React$Component);
+
+  var _super = _createSuper(ImageUpload);
+
+  function ImageUpload() {
+    var _this;
+
+    _classCallCheck(this, ImageUpload);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "state", {
+      loading: false,
+      imageUrl: _this.props.imageUrl
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "handleChange", function (info) {
+      if (info.file.status === 'uploading') {
+        _this.setState({
+          loading: true
+        });
+
+        return;
+      }
+
+      if (info.file.status === 'done') {
+        getBase64(info.file.originFileObj, function (imageUrl) {
+          _this.props.callback(info.file.response.data.url);
+
+          _this.setState({
+            imageUrl: imageUrl,
+            loading: false
+          });
+        });
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getUpload", function (imageUrl, uploadButton) {
+      return /*#__PURE__*/React__default["default"].createElement(antd.Upload, {
+        disabled: _this.props.disabled,
+        name: "file",
+        listType: "picture-card",
+        className: "avatar-uploader",
+        showUploadList: false,
+        action: config.apiBaseImg,
+        beforeUpload: function beforeUpload(file) {
+          return _beforeUpload(file, _this.props.callback);
+        },
+        onChange: _this.handleChange
+      }, imageUrl ? /*#__PURE__*/React__default["default"].createElement("img", {
+        src: imageUrl,
+        alt: "\u56FE\u7247",
+        style: {
+          width: '100%'
+        }
+      }) : uploadButton);
+    });
+
+    return _this;
+  }
+
+  _createClass(ImageUpload, [{
+    key: "UNSAFE_componentWillReceiveProps",
+    value: function UNSAFE_componentWillReceiveProps(nextProps) {
+      this.setState(_objectSpread2(_objectSpread2({}, this.state), {}, {
+        imageUrl: nextProps.imageUrl
+      }));
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var uploadButton = /*#__PURE__*/React__default["default"].createElement("div", null, this.state.loading ? /*#__PURE__*/React__default["default"].createElement(icons.LoadingOutlined, null) : /*#__PURE__*/React__default["default"].createElement(icons.PlusOutlined, null), /*#__PURE__*/React__default["default"].createElement("div", {
+        className: "ant-upload-text"
+      }, "\u7167\u7247"));
+      var imageUrl = this.state.imageUrl;
+      return this.getUpload(imageUrl, uploadButton);
+    }
+  }]);
+
+  return ImageUpload;
+}(React__default["default"].Component);
+
+var FormImage = function FormImage(_ref) {
+  var form = _ref.form,
+      label = _ref.label,
+      name = _ref.name,
+      message = _ref.message,
+      imageUrl = _ref.imageUrl,
+      _ref$required = _ref.required,
+      required = _ref$required === void 0 ? true : _ref$required;
+
+  var _useState = React.useState(),
+      _useState2 = _slicedToArray(_useState, 2),
+      url = _useState2[0],
+      setUrl = _useState2[1];
+
+  React.useEffect(function () {
+    setUrl(imageUrl);
+  }, [imageUrl]);
+
+  var handleLogoChange = function handleLogoChange(imageUrl) {
+    form.setFieldsValue(_defineProperty({}, name, imageUrl));
+  };
+
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    rules: [{
+      required: required,
+      message: message
+    }],
+    label: label,
+    name: name,
+    shouldUpdate: function shouldUpdate() {
+      setUrl(form.getFieldValue(name));
+    }
+  }, /*#__PURE__*/React__default["default"].createElement(ImageUpload, {
+    callback: handleLogoChange,
+    imageUrl: url
+  }));
+};
+
+var _excluded$2 = ["label", "name", "required", "type", "disabled", "rules", "hide"];
+var TextArea = antd.Input.TextArea;
+
+var FormInput = function FormInput(_ref) {
+  var label = _ref.label,
+      name = _ref.name,
+      required = _ref.required,
+      type = _ref.type,
+      disabled = _ref.disabled,
+      rules = _ref.rules,
+      hide = _ref.hide,
+      rest = _objectWithoutProperties(_ref, _excluded$2);
+
+  var isDisabled = disabled === true;
+  var finalRules = [{
+    required: required !== null && required !== void 0 ? required : true
+  }];
+
+  if (rules) {
+    finalRules = rules;
+  }
+
+  if (type === 'email') {
+    finalRules[0].type = type;
+  }
+
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    rules: finalRules,
+    label: label,
+    name: name,
+    style: hide ? _const.formItemHide : {}
+  }, type === 'textarea' ? /*#__PURE__*/React__default["default"].createElement(TextArea, _extends({
+    rows: 2,
+    disabled: isDisabled
+  }, rest)) : /*#__PURE__*/React__default["default"].createElement(antd.Input, _extends({
+    disabled: isDisabled,
+    type: type
+  }, rest)));
+};
+
+var _excluded$1 = ["label", "name", "required", "type", "suffix", "rules"];
+
+var FormInputNum = function FormInputNum(_ref) {
+  var label = _ref.label,
+      name = _ref.name,
+      required = _ref.required,
+      type = _ref.type,
+      suffix = _ref.suffix,
+      _ref$rules = _ref.rules,
+      rules = _ref$rules === void 0 ? [] : _ref$rules,
+      rest = _objectWithoutProperties(_ref, _excluded$1);
+
+  var parsers = {
+    integer: function integer(value) {
+      return value.replace(/[^\d.]/g, '');
+    }
+  };
+  var defaultRules = [{
+    required: required !== null && required !== void 0 ? required : true
+  }];
+  var finalRules = defaultRules.concat(rules);
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    label: label,
+    name: name,
+    rules: finalRules
+  }, /*#__PURE__*/React__default["default"].createElement(antd.InputNumber, _extends({
+    className: "form-input-number",
+    formatter: function formatter(value) {
+      return "".concat(value, " ").concat(suffix !== null && suffix !== void 0 ? suffix : '');
+    },
+    parser: parsers[type]
+  }, rest)));
+};
+
+var FormPublishRadio = function FormPublishRadio(_ref) {
+  var label = _ref.label,
+      name = _ref.name,
+      _ref$initialValue = _ref.initialValue,
+      initialValue = _ref$initialValue === void 0 ? true : _ref$initialValue;
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    initialValue: initialValue,
+    rules: [{
+      required: true
+    }],
+    label: label !== null && label !== void 0 ? label : '发布',
+    name: name !== null && name !== void 0 ? name : 'isEnable'
+  }, /*#__PURE__*/React__default["default"].createElement(antd.Radio.Group, null, /*#__PURE__*/React__default["default"].createElement(antd.Radio, {
+    value: true
+  }, "\u662F"), /*#__PURE__*/React__default["default"].createElement(antd.Radio, {
+    value: false
+  }, "\u5426")));
+};
+
+var FormRadio = function FormRadio(_ref) {
+  var label = _ref.label,
+      name = _ref.name,
+      options = _ref.options;
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    rules: [{
+      required: true
+    }],
+    label: label,
+    name: name
+  }, /*#__PURE__*/React__default["default"].createElement(antd.Radio.Group, null, options.map(function (option) {
+    return /*#__PURE__*/React__default["default"].createElement(antd.Radio, {
+      key: option.value,
+      value: option.value
+    }, option.title);
+  })));
+};
+
+var Option = antd.Select.Option;
+
+var FormSelect = function FormSelect(_ref) {
+  var _ref$options = _ref.options,
+      options = _ref$options === void 0 ? [] : _ref$options,
+      label = _ref.label,
+      name = _ref.name,
+      message = _ref.message,
+      required = _ref.required,
+      initialValue = _ref.initialValue,
+      _ref$valueKey = _ref.valueKey,
+      valueKey = _ref$valueKey === void 0 ? 'id' : _ref$valueKey,
+      _ref$titleKey = _ref.titleKey,
+      titleKey = _ref$titleKey === void 0 ? 'name' : _ref$titleKey,
+      _ref$mode = _ref.mode,
+      mode = _ref$mode === void 0 ? null : _ref$mode;
+
+  if (!message) {
+    message = mode === 'tags' ? "\u8BF7\u8F93\u5165".concat(label, "\u6807\u7B7E") : "\u8BF7\u9009\u62E9".concat(label);
+  }
+
+  return /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, {
+    rules: [{
+      required: required !== null && required !== void 0 ? required : true,
+      message: message
+    }],
+    label: label,
+    name: name,
+    initialValue: initialValue
+  }, /*#__PURE__*/React__default["default"].createElement(antd.Select, {
+    placeholder: message,
+    mode: mode
+  }, options.map(function (item) {
+    return /*#__PURE__*/React__default["default"].createElement(Option, {
+      key: item[valueKey],
+      value: String(item[valueKey])
+    }, item[titleKey]);
+  })));
+};
+
+var _excluded = ["comp", "disabled", "hide"];
+var confirm$1 = antd.Modal.confirm;
+
+var PageFormDrawer = function PageFormDrawer(_ref) {
+  var _ref$formItems = _ref.formItems,
+      formItems = _ref$formItems === void 0 ? [] : _ref$formItems,
+      defaultValues = _ref.defaultValues,
+      onClose = _ref.onClose,
+      callback = _ref.callback,
+      drawerWidth = _ref.drawerWidth,
+      initValues = _ref.initValues,
+      beforeFinish = _ref.beforeFinish;
+  var entity = common.deepClone(defaultValues);
+
+  var _useActiveRoute = useActiveRoute__default["default"](),
+      path = _useActiveRoute.path,
+      title = _useActiveRoute.title,
+      _useActiveRoute$apiPa = _useActiveRoute.apiPath,
+      apiPath = _useActiveRoute$apiPa === void 0 ? path : _useActiveRoute$apiPa;
+
+  var _Form$useForm = antd.Form.useForm(),
+      _Form$useForm2 = _slicedToArray(_Form$useForm, 1),
+      form = _Form$useForm2[0];
+
+  var _usePageForm = usePageForm__default["default"](entity),
+      _usePageForm2 = _slicedToArray(_usePageForm, 3),
+      entityId = _usePageForm2[0],
+      isEdit = _usePageForm2[1],
+      status = _usePageForm2[2];
+
+  var columns = formItems.filter(function (column) {
+    return column.form;
+  }).filter(function (column) {
+    return !(isEdit && column.form.hide === 'isEdit');
+  }).map(function (column) {
+    return _objectSpread2({
+      label: column.title,
+      name: column.dataIndex
+    }, column.form);
+  });
+  var tags = formItems.filter(function (item) {
+    var _item$form;
+
+    return ((_item$form = item.form) === null || _item$form === void 0 ? void 0 : _item$form.mode) === 'tags';
+  }).map(function (item) {
+    return item.dataIndex;
+  });
+  var resetFields = React.useCallback(function () {
+    var fields = form.getFieldsValue();
+    form.setFields(Object.keys(fields).map(function (name) {
+      return {
+        name: name,
+        value: fields[name],
+        touched: false
+      };
+    }));
+  }, [form]);
+  React.useEffect(function () {
+    if (entity) {
+      initValues && initValues(form, entity);
+      tags.forEach(function (tag) {
+        var item = entity[tag];
+        entity[tag] = item ? item.split(',') : [];
+      });
+      form.setFieldsValue(entity);
+      resetFields();
+    }
+  }, [entity, form, initValues, resetFields, tags]);
+
+  var handleClose = function handleClose() {
+    resetFields();
+    onClose();
+  };
+
+  var onFinish = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(values) {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              beforeFinish && beforeFinish(values);
+
+              if (!!entityId) {
+                values.id = entityId;
+              }
+
+              tags.forEach(function (tag) {
+                var _values$tag;
+
+                values[tag] = (_values$tag = values[tag]) === null || _values$tag === void 0 ? void 0 : _values$tag.join(',');
+              });
+              _context.next = 5;
+              return api__default["default"].post(getFormPath(apiPath), values);
+
+            case 5:
+              antd.message.success("".concat(status).concat(title, "\u6210\u529F"));
+              handleClose();
+              callback && callback();
+
+            case 8:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function onFinish(_x) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+
+  var confirmClose = function confirmClose() {
+    var fields = columns.map(function (column) {
+      return column.name;
+    });
+    var touched = form.isFieldsTouched(fields);
+
+    if (!touched) {
+      handleClose();
+      return;
+    }
+
+    confirm$1({
+      title: "\u6709\u672A\u4FDD\u5B58\u7684\u5185\u5BB9\uFF0C\u8BF7\u95EE\u786E\u8BA4\u79BB\u5F00\u5417",
+      okText: '确定',
+      cancelText: '取消',
+      onOk: function onOk() {
+        handleClose();
+      },
+      onCancel: function onCancel() {}
+    });
+  };
+
+  return /*#__PURE__*/React__default["default"].createElement(antd.Drawer, {
+    title: "".concat(status).concat(title),
+    placement: "right",
+    closable: true,
+    onClose: confirmClose,
+    visible: true,
+    key: "right",
+    width: drawerWidth
+  }, /*#__PURE__*/React__default["default"].createElement(antd.Form, _extends({}, _const.formLayout, {
+    form: form,
+    onFinish: onFinish
+  }), columns.map(function (item, index) {
+    var comp = item.comp,
+        disabled = item.disabled,
+        hide = item.hide,
+        rest = _objectWithoutProperties(item, _excluded);
+
+    rest.key = index;
+    rest.form = form;
+    rest.disabled = disabled;
+
+    if (disabled === 'isEdit') {
+      rest.disabled = isEdit;
+    }
+
+    if (comp === 'FormImage') {
+      rest.imageUrl = entity ? entity[item.name] : '';
+    }
+
+    if (comp === 'FormEditor') {
+      rest.initialValue = entity ? entity[item.name] : '';
+    }
+
+    if (hide === true || hide === 'isEdit' && isEdit) {
+      rest.hide = true;
+    }
+
+    return /*#__PURE__*/React__default["default"].createElement(compMap[comp], rest);
+  }), /*#__PURE__*/React__default["default"].createElement(antd.Form.Item, tailLayout, /*#__PURE__*/React__default["default"].createElement(antd.Button, {
+    type: "primary",
+    htmlType: "submit",
+    style: {
+      marginRight: 20
+    }
+  }, "\u786E\u5B9A"), /*#__PURE__*/React__default["default"].createElement(antd.Button, {
+    onClick: confirmClose
+  }, "\u53D6\u6D88"))));
+};
+var compMap = {
+  FormInput: FormInput,
+  FormInputNum: FormInputNum,
+  FormEnableRadio: FormEnableRadio,
+  FormImage: FormImage,
+  FormSelect: FormSelect,
+  FormDate: FormDate,
+  FormRadio: FormRadio,
+  FormCascader: FormCascader,
+  FormEditor: FormEditor,
+  FormPublishRadio: FormPublishRadio,
+  FormFile: FormFile
+};
+
+var getFormPath = function getFormPath(apiPath, customApiPath) {
+  return customApiPath !== null && customApiPath !== void 0 ? customApiPath : "".concat(apiPath, "/edit");
+};
+
+var tailLayout = {
+  wrapperCol: {
+    offset: 3,
+    span: 16
+  }
+};
+
+var confirm = antd.Modal.confirm;
+var useTableFetch = CustomTable.useTableFetch;
+
+var PageList = function PageList(_ref) {
+  var columns = _ref.columns,
+      path = _ref.path,
+      customForm = _ref.customForm,
+      addCallback = _ref.addCallback,
+      showRowSelection = _ref.showRowSelection,
+      _ref$drawerWidth = _ref.drawerWidth,
+      drawerWidth = _ref$drawerWidth === void 0 ? 600 : _ref$drawerWidth,
+      initValues = _ref.initValues,
+      beforeFinish = _ref.beforeFinish;
+
+  var _useActiveRoute = useActiveRoute__default["default"](),
+      title = _useActiveRoute.title,
+      _useActiveRoute$title = _useActiveRoute.titleProp,
+      titleProp = _useActiveRoute$title === void 0 ? 'name' : _useActiveRoute$title,
+      apiPath = _useActiveRoute.apiPath,
+      isPublish = _useActiveRoute.isPublish,
+      isEnable = _useActiveRoute.isEnable,
+      isPassword = _useActiveRoute.isPassword,
+      isHeaderItem = _useActiveRoute.isHeaderItem,
+      actionWidth = _useActiveRoute.actionWidth;
+
+  var fetchPath = path !== null && path !== void 0 ? path : "".concat(apiPath, "/page");
+  var tableList = useTableFetch(fetchPath);
+  var listColumns = columns.filter(function (column) {
+    return !column.hideInList;
+  });
+
+  var _useState = React.useState(),
+      _useState2 = _slicedToArray(_useState, 2),
+      selectedEntity = _useState2[0],
+      setSelectedEntity = _useState2[1];
+
+  var _useState3 = React.useState(),
+      _useState4 = _slicedToArray(_useState3, 2),
+      selectedEntityPwd = _useState4[0],
+      setSelectedEntityPwd = _useState4[1];
+
+  var confirmUpdate = function confirmUpdate(_ref2) {
+    var status = _ref2.status,
+        title = _ref2.title,
+        titleValue = _ref2.titleValue,
+        path = _ref2.path,
+        callback = _ref2.callback;
+    confirm({
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981".concat(status, "\u8BE5").concat(title, "\u5417?"),
+      content: "".concat(title, "\u540D: ").concat(titleValue),
+      okText: '确定',
+      cancelText: '取消',
+      onOk: function () {
+        var _onOk = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return api__default["default"].post(path);
+
+                case 2:
+                  antd.message.success("".concat(title).concat(status, "\u6210\u529F"));
+                  callback && callback();
+
+                case 4:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }));
+
+        function onOk() {
+          return _onOk.apply(this, arguments);
+        }
+
+        return onOk;
+      }(),
+      onCancel: function onCancel() {
+        console.log('Cancel');
+      }
+    });
+  };
+
+  var deleteEntity = function deleteEntity(entity) {
+    var payload = {
+      status: '删除',
+      title: title,
+      titleValue: entity[titleProp],
+      path: "".concat(apiPath, "/del?id=").concat(entity.id),
+      callback: function callback() {
+        tableList.fetchTable();
+      }
+    };
+    confirmUpdate(payload);
+  };
+
+  var publishEntity = function publishEntity(entity) {
+    var status = entity.isPublish ? '取消发布' : '发布';
+    var payload = {
+      status: status,
+      title: title,
+      titleValue: entity[titleProp],
+      path: "".concat(apiPath, "/publish?id=").concat(entity.id, "&isPublish=").concat(!entity.isPublish),
+      callback: function callback() {
+        tableList.fetchTable();
+      }
+    };
+    confirmUpdate(payload);
+  };
+
+  var enableEntity = function enableEntity(entity) {
+    var status = entity.isEnable ? '禁用' : '启用';
+    var payload = {
+      status: status,
+      title: title,
+      titleValue: entity[titleProp],
+      path: "".concat(apiPath, "/enable?id=").concat(entity.id, "&isEnable=").concat(!entity.isEnable),
+      callback: function callback() {
+        tableList.fetchTable();
+      }
+    };
+    confirmUpdate(payload);
+  };
+
+  var handleEdit = function handleEdit(record) {
+    if (customForm) {
+      customForm(record);
+    } else {
+      setSelectedEntity(record);
+    }
+  };
+
+  var handleAdd = function handleAdd() {
+    if (addCallback) {
+      addCallback();
+      return;
+    }
+
+    setSelectedEntity({});
+  };
+
+  var handleBatchDelete = function handleBatchDelete() {
+    var selectedRowKeys = tableList.rowSelection.selectedRowKeys;
+
+    if (!selectedRowKeys.length) {
+      antd.message.warn("\u8BF7\u5148\u9009\u62E9\u8981\u5220\u9664\u7684".concat(title));
+      return;
+    }
+
+    confirm({
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u5220\u9664\u9009\u4E2D\u7684".concat(title, "\u5417?"),
+      okText: '确定',
+      cancelText: '取消',
+      onOk: function () {
+        var _onOk2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  _context2.next = 2;
+                  return api__default["default"].post("".concat(apiPath, "/dels?ids=").concat(selectedRowKeys.join(',')));
+
+                case 2:
+                  antd.message.success("\u6279\u91CF\u5220\u9664".concat(title, "\u6210\u529F"));
+                  tableList.fetchTable();
+
+                case 4:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2);
+        }));
+
+        function onOk() {
+          return _onOk2.apply(this, arguments);
+        }
+
+        return onOk;
+      }(),
+      onCancel: function onCancel() {}
+    });
+  };
+
+  var setHeaderItem = function setHeaderItem(record) {
+    confirm({
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u8BBE\u7F6E\u8BE5\u65B0\u95FB\u4E3A\u5934\u90E8\u65B0\u95FB\u5417?",
+      okText: '确定',
+      cancelText: '取消',
+      onOk: function () {
+        var _onOk3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  _context3.next = 2;
+                  return api__default["default"].post("".concat(apiPath, "/headerItem?id=").concat(record.id));
+
+                case 2:
+                  antd.message.success("\u6279\u91CF\u5934\u90E8\u65B0\u95FB\u6210\u529F");
+                  tableList.fetchTable();
+
+                case 4:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee3);
+        }));
+
+        function onOk() {
+          return _onOk3.apply(this, arguments);
+        }
+
+        return onOk;
+      }(),
+      onCancel: function onCancel() {}
+    });
+  };
+
+  var actionRow = {
+    title: '操作',
+    key: 'action',
+    width: actionWidth,
+    render: function render(_, record) {
+      return /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return handleEdit(record);
+        }
+      }, "\u7F16\u8F91"), /*#__PURE__*/React__default["default"].createElement(antd.Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React__default["default"].createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return deleteEntity(record);
+        }
+      }, "\u5220\u9664"), isPublish && /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement(antd.Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React__default["default"].createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return publishEntity(record);
+        }
+      }, record.isPublish ? '取消发布' : '发布')), isEnable && /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement(antd.Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React__default["default"].createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return enableEntity(record);
+        }
+      }, record.isEnable ? '禁用' : '启用')), isPassword && /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement(antd.Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React__default["default"].createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return setSelectedEntityPwd(record);
+        }
+      }, "\u4FEE\u6539\u5BC6\u7801")), isHeaderItem && !record.isHeaderItem && /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement(antd.Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React__default["default"].createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return setHeaderItem(record);
+        }
+      }, "\u8BBE\u4E3A\u5934\u90E8\u65B0\u95FB")));
+    }
+  };
+
+  var formCallback = function formCallback() {
+    tableList.fetchTable();
+    setSelectedEntity();
+  };
+
+  var handleClose = function handleClose() {
+    setSelectedEntity();
+  };
+
+  return /*#__PURE__*/React__default["default"].createElement("div", {
+    className: "page page-list"
+  }, /*#__PURE__*/React__default["default"].createElement("div", {
+    className: "page-list-title"
+  }, title, "\u5217\u8868"), /*#__PURE__*/React__default["default"].createElement(ListHeader, _extends({}, tableList, {
+    showAdd: true,
+    placeholder: "\u8BF7\u8F93\u5165\u67E5\u8BE2\u6761\u4EF6",
+    addCallback: handleAdd,
+    deleteCallback: showRowSelection ? handleBatchDelete : null
+  })), /*#__PURE__*/React__default["default"].createElement(CustomTable, _extends({}, tableList, {
+    columns: [tableUtil.tableOrder].concat(_toConsumableArray(listColumns), [actionRow]),
+    rowKey: "id",
+    size: "middle",
+    showRowSelection: showRowSelection
+  })), selectedEntity && /*#__PURE__*/React__default["default"].createElement(PageFormDrawer, {
+    formItems: columns,
+    onClose: handleClose,
+    defaultValues: selectedEntity,
+    callback: formCallback,
+    drawerWidth: drawerWidth,
+    initValues: initValues,
+    beforeFinish: beforeFinish
+  }), selectedEntityPwd && /*#__PURE__*/React__default["default"].createElement(ChangePassword, {
+    setVisible: setSelectedEntityPwd,
+    user: selectedEntityPwd
+  }));
+};
+
+var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
+  _inherits(ErrorBoundary, _React$Component);
+
+  var _super = _createSuper(ErrorBoundary);
+
+  function ErrorBoundary(props) {
+    var _this;
+
+    _classCallCheck(this, ErrorBoundary);
+
+    _this = _super.call(this, props);
+    _this.state = {
+      hasError: false
+    };
+    return _this;
+  }
+
+  _createClass(ErrorBoundary, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.unlisten = this.props.history.listen(function () {
+        _this2.setState({
+          hasError: false
+        });
+      });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.unlisten();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (this.state.hasError) {
+        return /*#__PURE__*/React__default["default"].createElement("div", {
+          className: "error-boundary"
+        }, /*#__PURE__*/React__default["default"].createElement("img", {
+          src: errorPage__default["default"],
+          alt: "error"
+        }), /*#__PURE__*/React__default["default"].createElement("h2", null, "\u62B1\u6B49, \u7CFB\u7EDF\u51FA\u4E86\u70B9\u95EE\u9898, \u8BF7\u7A0D\u540E\u8BBF\u95EE\u6216\u8054\u7CFB\u7BA1\u7406\u5458\u3002"));
+      }
+
+      return this.props.children;
+    }
+  }], [{
+    key: "getDerivedStateFromError",
+    value: function getDerivedStateFromError() {
+      return {
+        hasError: true
+      };
+    }
+  }]);
+
+  return ErrorBoundary;
+}(React__default["default"].Component);
+
+var ErrorBoundary$1 = reactRouter.withRouter(ErrorBoundary);
+
+exports.ErrorBoundary = ErrorBoundary$1;
+exports.PageList = PageList;

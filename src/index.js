@@ -1,4 +1,4 @@
-import AdminAvatar from './components/Avatar'
-import BackBtn from './components/BackBtn'
+import PageList from './components/PageList'
+import ErrorBoundary from './components/ErrorBoundary'
 
-export { AdminAvatar, BackBtn }
+export { PageList, ErrorBoundary }
