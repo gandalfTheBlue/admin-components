@@ -28,6 +28,7 @@ const PageList = ({
     titleProp = 'name',
     apiPath,
     isPublish,
+    isIndex,
     isEnable,
     isPassword,
     isHeaderItem,
@@ -76,6 +77,20 @@ const PageList = ({
       title,
       titleValue: entity[titleProp],
       path: `${apiPath}/publish?id=${entity.id}&isPublish=${!entity.isPublish}`,
+      callback: () => {
+        tableList.fetchTable()
+      },
+    }
+    confirmUpdate(payload)
+  }
+
+  const indexEntity = (entity) => {
+    const status = entity.isIndex ? '取消首页显示' : '设为首页显示'
+    const payload = {
+      status,
+      title,
+      titleValue: entity[titleProp],
+      path: `${apiPath}/showInIndex?id=${entity.id}&show=${!entity.isPublish}`,
       callback: () => {
         tableList.fetchTable()
       },
@@ -168,6 +183,14 @@ const PageList = ({
               onClick={() => publishEntity(record)}
             >
               {record.isPublish ? '取消发布' : '发布'}
+            </span>
+          </>
+        )}
+        {isIndex && (
+          <>
+            <Divider type="vertical" />
+            <span className="table-action" onClick={() => indexEntity(record)}>
+              {record.isIndex ? '取消首页显示' : '设为首页显示'}
             </span>
           </>
         )}
