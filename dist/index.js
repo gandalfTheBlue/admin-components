@@ -542,8 +542,8 @@ var CustomTable = function CustomTable(_ref) {
               case 0:
                 payload = items.map(function (item, index) {
                   return {
-                    examinationGroupId: item.id,
-                    subOrderNum: index + 1
+                    id: item.id,
+                    sortOrder: index + 1
                   };
                 });
                 _context.next = 3;

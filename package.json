@@ -4,7 +4,7 @@
     "./dist"
   ],
   "repository": "https://github.com/gandalfTheBlue/admin-components",
-  "version": "0.1.16",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "source": "src/index.js",

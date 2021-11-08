@@ -34,8 +34,8 @@ const CustomTable = ({
     (dataSource) => {
       const reorderItems = async (items) => {
         const payload = items.map((item, index) => ({
-          examinationGroupId: item.id,
-          subOrderNum: index + 1,
+          id: item.id,
+          sortOrder: index + 1,
         }))
         await api.post(`${apiPath}/changeSortOrder`, payload)
       }

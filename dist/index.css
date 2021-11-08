@@ -16,6 +16,14 @@ tr.drop-over-downward td {
 tr.drop-over-upward td {
   border-top: 2px dashed #1890ff;
 }
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.list-header-right input {
+  margin-right: 15px;
+}
 .change-password .ant-modal-body {
   padding: 24px 60px;
 }
@@ -24,14 +32,6 @@ tr.drop-over-upward td {
 }
 .change-password .ant-modal-body .ant-form-item-label {
   margin-right: 20px;
-}
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-.list-header-right input {
-  margin-right: 15px;
 }
 .form-editor {
   display: flex;
