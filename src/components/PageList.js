@@ -90,7 +90,7 @@ const PageList = ({
       status,
       title,
       titleValue: entity[titleProp],
-      path: `${apiPath}/showInIndex?id=${entity.id}&show=${!entity.isPublish}`,
+      path: `${apiPath}/showInIndex?id=${entity.id}&show=${!entity.isInIndex}`,
       callback: () => {
         tableList.fetchTable()
       },

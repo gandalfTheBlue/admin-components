@@ -1595,7 +1595,7 @@ var PageList = function PageList(_ref) {
       status: status,
       title: title,
       titleValue: entity[titleProp],
-      path: "".concat(apiPath, "/showInIndex?id=").concat(entity.id, "&show=").concat(!entity.isPublish),
+      path: "".concat(apiPath, "/showInIndex?id=").concat(entity.id, "&show=").concat(!entity.isInIndex),
       callback: function callback() {
         tableList.fetchTable();
       }
