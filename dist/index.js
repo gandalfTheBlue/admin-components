@@ -17,6 +17,9 @@ import api from 'src/utils/api';
 import { tableOrder } from 'src/utils/tableUtil';
 import { LockOutlined, LoadingOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import { formLayout, formItemHide } from 'src/utils/const';
+import update from 'immutability-helper';
+import { DropTarget, DragSource, DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import useTableFetch$1 from 'src/hooks/useTableFetch';
 import usePageForm from 'src/hooks/usePageForm';
 import { deepClone } from 'src/utils/common';
@@ -425,7 +428,83 @@ var ChangePassword = function ChangePassword(_ref) {
   }))));
 };
 
-var _excluded$3 = ["pagination", "fetchTable", "showPagination", "showRowSelection", "rowSelection", "defaultPageSize", "pageSizeOptions", "refreshInterval"];
+__$styleInject("tr.drop-over-downward td {\n  border-bottom: 2px dashed #1890ff;\n}\ntr.drop-over-upward td {\n  border-top: 2px dashed #1890ff;\n}\n");
+
+var _excluded$4 = ["isOver", "connectDragSource", "connectDropTarget", "moveRow"];
+var dragingIndex = -1;
+
+var BodyRow = function BodyRow(props) {
+  var isOver = props.isOver,
+      connectDragSource = props.connectDragSource,
+      connectDropTarget = props.connectDropTarget;
+      props.moveRow;
+      var restProps = _objectWithoutProperties(props, _excluded$4);
+
+  var style = _objectSpread2(_objectSpread2({}, restProps.style), {}, {
+    cursor: 'move'
+  });
+
+  var className = restProps.className;
+
+  if (isOver) {
+    if (restProps.index > dragingIndex) {
+      className += ' drop-over-downward';
+    }
+
+    if (restProps.index < dragingIndex) {
+      className += ' drop-over-upward';
+    }
+  }
+
+  return connectDragSource(connectDropTarget( /*#__PURE__*/React.createElement("tr", _extends({}, restProps, {
+    className: className,
+    style: style
+  }))));
+};
+
+var rowSource = {
+  beginDrag: function beginDrag(props) {
+    dragingIndex = props.index;
+    return {
+      index: props.index
+    };
+  }
+};
+var rowTarget = {
+  drop: function drop(props, monitor) {
+    var dragIndex = monitor.getItem().index;
+    var hoverIndex = props.index; // Don't replace items with themselves
+
+    if (dragIndex === hoverIndex) {
+      return;
+    } // Time to actually perform the action
+
+
+    props.moveRow(dragIndex, hoverIndex); // Note: we're mutating the monitor item here!
+    // Generally it's better to avoid mutations,
+    // but it's good here for the sake of performance
+    // to avoid expensive index searches.
+
+    monitor.getItem().index = hoverIndex;
+  }
+};
+var DragableBodyRow = DropTarget('row', rowTarget, function (connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  };
+})(DragSource('row', rowSource, function (connect) {
+  return {
+    connectDragSource: connect.dragSource()
+  };
+})(BodyRow));
+var dragBodyRowComponents = {
+  body: {
+    row: DragableBodyRow
+  }
+};
+
+var _excluded$3 = ["pagination", "fetchTable", "showPagination", "showRowSelection", "rowSelection", "defaultPageSize", "pageSizeOptions", "refreshInterval", "dataSource"];
 
 var CustomTable = function CustomTable(_ref) {
   var pagination = _ref.pagination,
@@ -438,8 +517,61 @@ var CustomTable = function CustomTable(_ref) {
       defaultPageSize = _ref.defaultPageSize,
       pageSizeOptions = _ref.pageSizeOptions,
       refreshInterval = _ref.refreshInterval,
+      originDataSourced = _ref.dataSource,
       tableProps = _objectWithoutProperties(_ref, _excluded$3);
 
+  var _useActiveRoute = useActiveRoute(),
+      isSort = _useActiveRoute.isSort,
+      apiPath = _useActiveRoute.apiPath;
+
+  var _useState = useState(),
+      _useState2 = _slicedToArray(_useState, 2),
+      dataSource = _useState2[0],
+      setDataSource = _useState2[1];
+
+  useEffect(function () {
+    setDataSource(originDataSourced);
+  }, [originDataSourced]);
+  var reorder = useCallback(function (dataSource) {
+    var reorderItems = /*#__PURE__*/function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(items) {
+        var payload;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                payload = items.map(function (item, index) {
+                  return {
+                    examinationGroupId: item.id,
+                    subOrderNum: index + 1
+                  };
+                });
+                _context.next = 3;
+                return api.post("".concat(apiPath, "/changeSortOrder"), payload);
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+
+      return function reorderItems(_x) {
+        return _ref2.apply(this, arguments);
+      };
+    }();
+
+    reorderItems(dataSource);
+  }, [apiPath]);
+  var moveRow = useCallback(function (dragIndex, hoverIndex) {
+    var dragRow = dataSource[dragIndex];
+    var newDataSource = update(dataSource, {
+      $splice: [[dragIndex, 1], [hoverIndex, 0, dragRow]]
+    });
+    setDataSource(newDataSource);
+    reorder(newDataSource);
+  }, [dataSource, reorder]);
   rowSelection = showRowSelection ? rowSelection : null;
   var finalPagination;
 
@@ -476,7 +608,36 @@ var CustomTable = function CustomTable(_ref) {
       });
     }
   }, [refreshInterval, fetchTable]);
+
+  if (isSort) {
+    return /*#__PURE__*/React.createElement(DndProvider, {
+      backend: HTML5Backend
+    }, /*#__PURE__*/React.createElement(Table, _extends({}, tableProps, {
+      dataSource: dataSource,
+      loading: false,
+      bordered: true,
+      rowSelection: rowSelection,
+      pagination: pagination && finalPagination,
+      onChange: function onChange(paginator, filters) {
+        return fetchTable({
+          __tableChange__: {
+            paginator: paginator,
+            filters: filters
+          }
+        });
+      },
+      components: dragBodyRowComponents,
+      onRow: function onRow(_, index) {
+        return {
+          index: index,
+          moveRow: moveRow
+        };
+      }
+    })));
+  }
+
   return /*#__PURE__*/React.createElement(Table, _extends({}, tableProps, {
+    dataSource: dataSource,
     loading: false,
     bordered: true,
     rowSelection: rowSelection,

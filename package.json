@@ -4,7 +4,7 @@
     "./dist"
   ],
   "repository": "https://github.com/gandalfTheBlue/admin-components",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "source": "src/index.js",
@@ -55,8 +55,11 @@
     "@material-ui/icons": "^4.11.2",
     "antd": "4.16.13",
     "formik": "^2.2.9",
+    "immutability-helper": "^3.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-dnd": "^14.0.4",
+    "react-dnd-html5-backend": "^14.0.2",
     "yup": "^0.32.9"
   },
   "prettier": {

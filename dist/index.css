@@ -10,6 +10,12 @@
   margin-top: 20px;
   margin-left: 28px;
 }
+tr.drop-over-downward td {
+  border-bottom: 2px dashed #1890ff;
+}
+tr.drop-over-upward td {
+  border-top: 2px dashed #1890ff;
+}
 .change-password .ant-modal-body {
   padding: 24px 60px;
 }
