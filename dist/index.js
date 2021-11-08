@@ -1496,7 +1496,7 @@ var PageList = function PageList(_ref) {
       titleProp = _useActiveRoute$title === void 0 ? 'name' : _useActiveRoute$title,
       apiPath = _useActiveRoute.apiPath,
       isPublish = _useActiveRoute.isPublish,
-      isIndex = _useActiveRoute.isIndex,
+      isInIndex = _useActiveRoute.isInIndex,
       isEnable = _useActiveRoute.isEnable,
       isPassword = _useActiveRoute.isPassword,
       isHeaderItem = _useActiveRoute.isHeaderItem,
@@ -1590,7 +1590,7 @@ var PageList = function PageList(_ref) {
   };
 
   var indexEntity = function indexEntity(entity) {
-    var status = entity.isIndex ? '取消首页显示' : '设为首页显示';
+    var status = entity.isInIndex ? '取消首页显示' : '设为首页显示';
     var payload = {
       status: status,
       title: title,
@@ -1737,14 +1737,14 @@ var PageList = function PageList(_ref) {
         onClick: function onClick() {
           return publishEntity(record);
         }
-      }, record.isPublish ? '取消发布' : '发布')), isIndex && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+      }, record.isPublish ? '取消发布' : '发布')), isInIndex && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
         type: "vertical"
       }), /*#__PURE__*/React.createElement("span", {
         className: "table-action",
         onClick: function onClick() {
           return indexEntity(record);
         }
-      }, record.isIndex ? '取消首页显示' : '设为首页显示')), isEnable && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+      }, record.isInIndex ? '取消首页显示' : '设为首页显示')), isEnable && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
         type: "vertical"
       }), /*#__PURE__*/React.createElement("span", {
         className: "table-action",

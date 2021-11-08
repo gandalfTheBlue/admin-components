@@ -28,7 +28,7 @@ const PageList = ({
     titleProp = 'name',
     apiPath,
     isPublish,
-    isIndex,
+    isInIndex,
     isEnable,
     isPassword,
     isHeaderItem,
@@ -85,7 +85,7 @@ const PageList = ({
   }
 
   const indexEntity = (entity) => {
-    const status = entity.isIndex ? '取消首页显示' : '设为首页显示'
+    const status = entity.isInIndex ? '取消首页显示' : '设为首页显示'
     const payload = {
       status,
       title,
@@ -186,11 +186,11 @@ const PageList = ({
             </span>
           </>
         )}
-        {isIndex && (
+        {isInIndex && (
           <>
             <Divider type="vertical" />
             <span className="table-action" onClick={() => indexEntity(record)}>
-              {record.isIndex ? '取消首页显示' : '设为首页显示'}
+              {record.isInIndex ? '取消首页显示' : '设为首页显示'}
             </span>
           </>
         )}
