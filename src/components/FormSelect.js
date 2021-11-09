@@ -15,7 +15,16 @@ const FormSelect = ({
   mode = null,
 }) => {
   if (!message) {
-    message = mode === 'tags' ? `请输入${label}标签` : `请选择${label}`
+    if (mode === 'tagInput') {
+      message = `请输入${label}标签`
+    }
+    if (mode === 'tagSelect') {
+      message = `请选择${label}`
+    }
+  }
+
+  if (['tagInput', 'tagSelect'].includes(mode)) {
+    mode = 'tags'
   }
 
   return (
@@ -26,11 +35,15 @@ const FormSelect = ({
       initialValue={initialValue}
     >
       <Select placeholder={message} mode={mode}>
-        {options.map((item) => (
-          <Option key={item[valueKey]} value={String(item[valueKey])}>
-            {item[titleKey]}
-          </Option>
-        ))}
+        {options.map((item) => {
+          const value = item[valueKey]
+          const finalValue = mode === 'tags' ? String(value) : value
+          return (
+            <Option key={value} value={finalValue}>
+              {item[titleKey]}
+            </Option>
+          )
+        })}
       </Select>
     </Form.Item>
   )

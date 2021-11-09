@@ -20,8 +20,6 @@ import FormSelect from './FormSelect'
 
 const { confirm } = Modal
 
-const tagSeparator = '@_@'
-
 const PageFormDrawer = ({
   formItems = [],
   defaultValues,
@@ -47,10 +45,15 @@ const PageFormDrawer = ({
       }
     })
 
-  const tags = formItems
-    .filter((item) => item.form?.mode === 'tags')
+  const tagItems = formItems
+    .filter((item) => item.form?.mode?.startsWith('tag'))
     .map((item) => {
-      return item.dataIndex
+      const separators = {
+        tagInput: '@_@',
+        tagSelect: ',',
+      }
+      item.separator = separators[`${item.form.mode}`]
+      return item
     })
 
   const resetFields = useCallback(() => {
@@ -67,14 +70,15 @@ const PageFormDrawer = ({
   useEffect(() => {
     if (entity) {
       initValues && initValues(form, entity)
-      tags.forEach((tag) => {
-        const item = entity[tag]
-        entity[tag] = item ? item.split(tagSeparator) : []
+      tagItems.forEach((item) => {
+        const { dataIndex: itemName, separator } = item
+        const itemValue = entity[itemName]
+        entity[itemName] = itemValue ? String(itemValue).split(separator) : []
       })
       form.setFieldsValue(entity)
       resetFields()
     }
-  }, [entity, form, initValues, resetFields, tags])
+  }, [entity, form, initValues, resetFields, tagItems])
 
   const handleClose = () => {
     resetFields()
@@ -86,8 +90,9 @@ const PageFormDrawer = ({
     if (!!entityId) {
       values.id = entityId
     }
-    tags.forEach((tag) => {
-      values[tag] = values[tag]?.join(tagSeparator)
+    tagItems.forEach((item) => {
+      const { dataIndex: itemName, separator } = item
+      values[itemName] = values[itemName]?.join(separator)
     })
     await api.post(getFormPath(apiPath), values)
     message.success(`${status}${title}成功`)

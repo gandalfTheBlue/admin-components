@@ -10,11 +10,11 @@ function __$styleInject(css) {
     return css;
 }
 
-import { Form, Modal, Input, message, Table, Button, Cascader, DatePicker, Upload, Radio, InputNumber, Select, Drawer, Divider } from 'antd';
+import { Image, Tag, Form, Modal, Input, message, Table, Button, Cascader, DatePicker, Upload, Radio, InputNumber, Select, Drawer, Divider } from 'antd';
 import React, { useState, useEffect, useCallback } from 'react';
 import useActiveRoute from 'src/hooks/useActiveRoute';
 import api from 'src/utils/api';
-import { tableOrder } from 'src/utils/tableUtil';
+import moment from 'moment';
 import { LockOutlined, LoadingOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import { formLayout, formItemHide } from 'src/utils/const';
 import update from 'immutability-helper';
@@ -68,6 +68,22 @@ function _objectSpread2(target) {
   }
 
   return target;
+}
+
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
 }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -352,6 +368,90 @@ function _nonIterableSpread() {
 function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
+
+var dateFormat = 'YYYY-MM-DD';
+var timeFormat = 'YYYY-MM-DD HH:mm:ss';
+/**
+ * @param {*} value long值型的时间值
+ * @format {*} format 时间格式
+ */
+
+var formatTime = function formatTime(value) {
+  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : dateFormat;
+
+  if (['string', 'number'].includes(_typeof(value))) {
+    return moment(value).format(format);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(function (item) {
+      return moment(item).format(format);
+    });
+  }
+
+  return [];
+};
+
+var tableOrder = {
+  title: '序号',
+  key: 'index',
+  render: function render(text, record, index) {
+    return "".concat(index + 1);
+  }
+};
+var getImageRow = function getImageRow(title, dataIndex) {
+  return {
+    title: title,
+    dataIndex: dataIndex,
+    render: function render(_, record) {
+      return /*#__PURE__*/React.createElement(Image, {
+        width: 45,
+        src: record[dataIndex]
+      });
+    }
+  };
+};
+var getTagRow = function getTagRow(title, dataIndex, items) {
+  return {
+    title: title,
+    dataIndex: dataIndex,
+    render: function render(_, record) {
+      var itemIds = record[dataIndex].split(',') || [];
+      return /*#__PURE__*/React.createElement(React.Fragment, null, itemIds.map(function (id) {
+        var item = items.find(function (item) {
+          return String(item.id) === id;
+        });
+        if (!item) return null;
+        return /*#__PURE__*/React.createElement(Tag, {
+          key: item.id
+        }, item.name);
+      }));
+    }
+  };
+};
+var getDateRow = function getDateRow(title, dataIndex) {
+  return {
+    title: title,
+    dataIndex: dataIndex,
+    render: function render(_, record) {
+      return /*#__PURE__*/React.createElement("span", null, formatTime(record[dataIndex]));
+    }
+  };
+};
+var getTimeRow = function getTimeRow(title, dataIndex) {
+  return {
+    title: title,
+    dataIndex: dataIndex,
+    render: function render(_, record) {
+      return /*#__PURE__*/React.createElement("span", null, formatTime(record[dataIndex], timeFormat));
+    }
+  };
+};
+var getRender = function getRender(callback) {
+  return function (_, record) {
+    return /*#__PURE__*/React.createElement("span", null, callback(record));
+  };
+};
 
 __$styleInject(".change-password .ant-modal-body {\n  padding: 24px 60px;\n}\n.change-password .ant-modal-body .ant-form-item {\n  margin-bottom: 10px;\n}\n.change-password .ant-modal-body .ant-form-item-label {\n  margin-right: 20px;\n}\n");
 
@@ -1247,7 +1347,17 @@ var FormSelect = function FormSelect(_ref) {
       mode = _ref$mode === void 0 ? null : _ref$mode;
 
   if (!message) {
-    message = mode === 'tags' ? "\u8BF7\u8F93\u5165".concat(label, "\u6807\u7B7E") : "\u8BF7\u9009\u62E9".concat(label);
+    if (mode === 'tagInput') {
+      message = "\u8BF7\u8F93\u5165".concat(label, "\u6807\u7B7E");
+    }
+
+    if (mode === 'tagSelect') {
+      message = "\u8BF7\u9009\u62E9".concat(label);
+    }
+  }
+
+  if (['tagInput', 'tagSelect'].includes(mode)) {
+    mode = 'tags';
   }
 
   return /*#__PURE__*/React.createElement(Form.Item, {
@@ -1262,16 +1372,17 @@ var FormSelect = function FormSelect(_ref) {
     placeholder: message,
     mode: mode
   }, options.map(function (item) {
+    var value = item[valueKey];
+    var finalValue = mode === 'tags' ? String(value) : value;
     return /*#__PURE__*/React.createElement(Option, {
-      key: item[valueKey],
-      value: String(item[valueKey])
+      key: value,
+      value: finalValue
     }, item[titleKey]);
   })));
 };
 
 var _excluded = ["comp", "disabled", "hide"];
 var confirm$1 = Modal.confirm;
-var tagSeparator = '@_@';
 
 var PageFormDrawer = function PageFormDrawer(_ref) {
   var _ref$formItems = _ref.formItems,
@@ -1310,12 +1421,17 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
       name: column.dataIndex
     }, column.form);
   });
-  var tags = formItems.filter(function (item) {
-    var _item$form;
+  var tagItems = formItems.filter(function (item) {
+    var _item$form, _item$form$mode;
 
-    return ((_item$form = item.form) === null || _item$form === void 0 ? void 0 : _item$form.mode) === 'tags';
+    return (_item$form = item.form) === null || _item$form === void 0 ? void 0 : (_item$form$mode = _item$form.mode) === null || _item$form$mode === void 0 ? void 0 : _item$form$mode.startsWith('tag');
   }).map(function (item) {
-    return item.dataIndex;
+    var separators = {
+      tagInput: '@_@',
+      tagSelect: ','
+    };
+    item.separator = separators["".concat(item.form.mode)];
+    return item;
   });
   var resetFields = useCallback(function () {
     var fields = form.getFieldsValue();
@@ -1330,14 +1446,16 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
   useEffect(function () {
     if (entity) {
       initValues && initValues(form, entity);
-      tags.forEach(function (tag) {
-        var item = entity[tag];
-        entity[tag] = item ? item.split(tagSeparator) : [];
+      tagItems.forEach(function (item) {
+        var itemName = item.dataIndex,
+            separator = item.separator;
+        var itemValue = entity[itemName];
+        entity[itemName] = itemValue ? String(itemValue).split(separator) : [];
       });
       form.setFieldsValue(entity);
       resetFields();
     }
-  }, [entity, form, initValues, resetFields, tags]);
+  }, [entity, form, initValues, resetFields, tagItems]);
 
   var handleClose = function handleClose() {
     resetFields();
@@ -1356,10 +1474,12 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
                 values.id = entityId;
               }
 
-              tags.forEach(function (tag) {
-                var _values$tag;
+              tagItems.forEach(function (item) {
+                var _values$itemName;
 
-                values[tag] = (_values$tag = values[tag]) === null || _values$tag === void 0 ? void 0 : _values$tag.join(tagSeparator);
+                var itemName = item.dataIndex,
+                    separator = item.separator;
+                values[itemName] = (_values$itemName = values[itemName]) === null || _values$itemName === void 0 ? void 0 : _values$itemName.join(separator);
               });
               _context.next = 5;
               return api.post(getFormPath(apiPath), values);
@@ -1884,4 +2004,4 @@ var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
 
 var ErrorBoundary$1 = withRouter(ErrorBoundary);
 
-export { ErrorBoundary$1 as ErrorBoundary, PageList };
+export { ErrorBoundary$1 as ErrorBoundary, PageList, getDateRow, getImageRow, getRender, getTagRow, getTimeRow, tableOrder };
