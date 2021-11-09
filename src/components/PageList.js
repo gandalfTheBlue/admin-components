@@ -32,6 +32,7 @@ const PageList = ({
     isEnable,
     isPassword,
     isHeaderItem,
+    isCopy,
     actionWidth,
   } = useActiveRoute()
   const fetchPath = path ?? `${apiPath}/page`
@@ -128,6 +129,12 @@ const PageList = ({
     setSelectedEntity({})
   }
 
+  const copyItem = (record) => {
+    const newRecord = JSON.parse(JSON.stringify(record))
+    delete newRecord.id
+    setSelectedEntity(newRecord)
+  }
+
   const handleBatchDelete = () => {
     const { selectedRowKeys } = tableList.rowSelection
     if (!selectedRowKeys.length) {
@@ -221,6 +228,14 @@ const PageList = ({
               onClick={() => setHeaderItem(record)}
             >
               设为头部新闻
+            </span>
+          </>
+        )}
+        {isCopy && (
+          <>
+            <Divider type="vertical" />
+            <span className="table-action" onClick={() => copyItem(record)}>
+              复制
             </span>
           </>
         )}

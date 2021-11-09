@@ -1500,6 +1500,7 @@ var PageList = function PageList(_ref) {
       isEnable = _useActiveRoute.isEnable,
       isPassword = _useActiveRoute.isPassword,
       isHeaderItem = _useActiveRoute.isHeaderItem,
+      isCopy = _useActiveRoute.isCopy,
       actionWidth = _useActiveRoute.actionWidth;
 
   var fetchPath = path !== null && path !== void 0 ? path : "".concat(apiPath, "/page");
@@ -1634,6 +1635,12 @@ var PageList = function PageList(_ref) {
     setSelectedEntity({});
   };
 
+  var copyItem = function copyItem(record) {
+    var newRecord = JSON.parse(JSON.stringify(record));
+    delete newRecord.id;
+    setSelectedEntity(newRecord);
+  };
+
   var handleBatchDelete = function handleBatchDelete() {
     var selectedRowKeys = tableList.rowSelection.selectedRowKeys;
 
@@ -1765,7 +1772,14 @@ var PageList = function PageList(_ref) {
         onClick: function onClick() {
           return setHeaderItem(record);
         }
-      }, "\u8BBE\u4E3A\u5934\u90E8\u65B0\u95FB")));
+      }, "\u8BBE\u4E3A\u5934\u90E8\u65B0\u95FB")), isCopy && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React.createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return copyItem(record);
+        }
+      }, "\u590D\u5236")));
     }
   };
 
