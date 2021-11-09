@@ -10,15 +10,6 @@
   margin-top: 20px;
   margin-left: 28px;
 }
-.change-password .ant-modal-body {
-  padding: 24px 60px;
-}
-.change-password .ant-modal-body .ant-form-item {
-  margin-bottom: 10px;
-}
-.change-password .ant-modal-body .ant-form-item-label {
-  margin-right: 20px;
-}
 tr.drop-over-downward td {
   border-bottom: 2px dashed #1890ff;
 }
@@ -32,6 +23,15 @@ tr.drop-over-upward td {
 }
 .list-header-right input {
   margin-right: 15px;
+}
+.change-password .ant-modal-body {
+  padding: 24px 60px;
+}
+.change-password .ant-modal-body .ant-form-item {
+  margin-bottom: 10px;
+}
+.change-password .ant-modal-body .ant-form-item-label {
+  margin-right: 20px;
 }
 .form-editor {
   display: flex;

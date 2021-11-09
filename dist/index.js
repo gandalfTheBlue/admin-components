@@ -1271,6 +1271,7 @@ var FormSelect = function FormSelect(_ref) {
 
 var _excluded = ["comp", "disabled", "hide"];
 var confirm$1 = Modal.confirm;
+var tagSeparator = '@_@';
 
 var PageFormDrawer = function PageFormDrawer(_ref) {
   var _ref$formItems = _ref.formItems,
@@ -1331,7 +1332,7 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
       initValues && initValues(form, entity);
       tags.forEach(function (tag) {
         var item = entity[tag];
-        entity[tag] = item ? item.split(',') : [];
+        entity[tag] = item ? item.split(tagSeparator) : [];
       });
       form.setFieldsValue(entity);
       resetFields();
@@ -1358,7 +1359,7 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
               tags.forEach(function (tag) {
                 var _values$tag;
 
-                values[tag] = (_values$tag = values[tag]) === null || _values$tag === void 0 ? void 0 : _values$tag.join(',');
+                values[tag] = (_values$tag = values[tag]) === null || _values$tag === void 0 ? void 0 : _values$tag.join(tagSeparator);
               });
               _context.next = 5;
               return api.post(getFormPath(apiPath), values);
