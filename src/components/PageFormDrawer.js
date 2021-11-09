@@ -20,6 +20,8 @@ import FormSelect from './FormSelect'
 
 const { confirm } = Modal
 
+const tagSeparator = '@_@'
+
 const PageFormDrawer = ({
   formItems = [],
   defaultValues,
@@ -67,7 +69,7 @@ const PageFormDrawer = ({
       initValues && initValues(form, entity)
       tags.forEach((tag) => {
         const item = entity[tag]
-        entity[tag] = item ? item.split(',') : []
+        entity[tag] = item ? item.split(tagSeparator) : []
       })
       form.setFieldsValue(entity)
       resetFields()
@@ -85,7 +87,7 @@ const PageFormDrawer = ({
       values.id = entityId
     }
     tags.forEach((tag) => {
-      values[tag] = values[tag]?.join(',')
+      values[tag] = values[tag]?.join(tagSeparator)
     })
     await api.post(getFormPath(apiPath), values)
     message.success(`${status}${title}成功`)
