@@ -10,12 +10,12 @@ function __$styleInject(css) {
     return css;
 }
 
-import { Image, Tag, Form, Modal, Input, message, Table, Button, Cascader, DatePicker, Upload, Radio, InputNumber, Select, Drawer, Divider } from 'antd';
+import { Image, Tag, Form, Modal, Input, message, Table, Button, Cascader, DatePicker, Upload, Radio, InputNumber, Select, Drawer, Divider, Dropdown, Menu } from 'antd';
 import React, { useState, useEffect, useCallback } from 'react';
 import useActiveRoute from 'src/hooks/useActiveRoute';
 import api from 'src/utils/api';
 import moment from 'moment';
-import { LockOutlined, LoadingOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
+import { LockOutlined, LoadingOutlined, UploadOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { formLayout, formItemHide } from 'src/utils/const';
 import update from 'immutability-helper';
 import { DropTarget, DragSource, DndProvider } from 'react-dnd';
@@ -31,6 +31,8 @@ import 'antd/es/modal/style';
 import 'antd/es/slider/style';
 import { withRouter } from 'react-router';
 import errorPage from 'src/images/error-page.svg';
+import { EditableProTable } from '@ant-design/pro-table';
+import { PageCustom as PageCustom$1, PageFormDrawer as PageFormDrawer$1 } from '@gandalftheblue/admin-components';
 
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
@@ -1384,7 +1386,7 @@ var FormSelect = function FormSelect(_ref) {
 };
 
 var _excluded = ["comp", "disabled", "hide"];
-var confirm$1 = Modal.confirm;
+var confirm$2 = Modal.confirm;
 
 var PageFormDrawer = function PageFormDrawer(_ref) {
   var _ref$formItems = _ref.formItems,
@@ -1515,7 +1517,7 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
       return;
     }
 
-    confirm$1({
+    confirm$2({
       title: "\u6709\u672A\u4FDD\u5B58\u7684\u5185\u5BB9\uFF0C\u8BF7\u95EE\u786E\u8BA4\u79BB\u5F00\u5417",
       okText: '确定',
       cancelText: '取消',
@@ -1599,7 +1601,7 @@ var tailLayout = {
   }
 };
 
-var confirm = Modal.confirm;
+var confirm$1 = Modal.confirm;
 var useTableFetch = CustomTable.useTableFetch;
 
 var PageList = function PageList(_ref) {
@@ -1648,7 +1650,7 @@ var PageList = function PageList(_ref) {
         titleValue = _ref2.titleValue,
         path = _ref2.path,
         callback = _ref2.callback;
-    confirm({
+    confirm$1({
       title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981".concat(status, "\u8BE5").concat(title, "\u5417?"),
       content: "".concat(title, "\u540D: ").concat(titleValue),
       okText: '确定',
@@ -1772,7 +1774,7 @@ var PageList = function PageList(_ref) {
       return;
     }
 
-    confirm({
+    confirm$1({
       title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u5220\u9664\u9009\u4E2D\u7684".concat(title, "\u5417?"),
       okText: '确定',
       cancelText: '取消',
@@ -1808,7 +1810,7 @@ var PageList = function PageList(_ref) {
   };
 
   var setHeaderItem = function setHeaderItem(record) {
-    confirm({
+    confirm$1({
       title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u8BBE\u7F6E\u8BE5\u65B0\u95FB\u4E3A\u5934\u90E8\u65B0\u95FB\u5417?",
       okText: '确定',
       cancelText: '取消',
@@ -2019,4 +2021,248 @@ var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
 
 var ErrorBoundary$1 = withRouter(ErrorBoundary);
 
-export { ErrorBoundary$1 as ErrorBoundary, PageCustom, PageFormDrawer, PageList, getDateRow, getImageRow, getRender, getTagRow, getTimeRow, tableOrder };
+var confirm = Modal.confirm;
+
+var TreeTable = function TreeTable(_ref) {
+  var columns = _ref.columns,
+      _ref$maxLevel = _ref.maxLevel,
+      maxLevel = _ref$maxLevel === void 0 ? 2 : _ref$maxLevel;
+
+  var _useActiveRoute = useActiveRoute(),
+      title = _useActiveRoute.title,
+      apiPath = _useActiveRoute.apiPath;
+
+  var _useState = useState([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      items = _useState2[0],
+      setItems = _useState2[1];
+
+  var _useState3 = useState([]),
+      _useState4 = _slicedToArray(_useState3, 2),
+      treeItems = _useState4[0],
+      setTreeItems = _useState4[1];
+
+  var _useState5 = useState(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      formVisible = _useState6[0],
+      setFormVisible = _useState6[1];
+
+  var _useState7 = useState(),
+      _useState8 = _slicedToArray(_useState7, 2),
+      selectedItem = _useState8[0],
+      setSelectedItem = _useState8[1];
+
+  var fetchItems = useCallback( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var result;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return api.get("".concat(apiPath, "/page?rows=10000"));
+
+          case 2:
+            result = _context.sent;
+            setItems(result.data);
+            setTreeItems(listToTree(result.data));
+
+          case 5:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  })), [apiPath]);
+  useEffect(function () {
+    fetchItems();
+  }, [fetchItems]);
+
+  var handleAction = function handleAction(e) {
+    var _e$target = e.target,
+        _e$target$type = _e$target.type,
+        type = _e$target$type === void 0 ? '' : _e$target$type,
+        id = _e$target.id;
+    var item = items.find(function (item) {
+      return item.id === Number(id);
+    });
+
+    if (type.startsWith('add')) {
+      if (type === 'add-current') {
+        setSelectedItem({
+          parent: item.parent,
+          pid: item.pid
+        });
+      }
+
+      if (type === 'add-next') {
+        setSelectedItem({
+          parent: item.name,
+          pid: item.id
+        });
+      }
+
+      setFormVisible(true);
+    }
+
+    if (type === 'edit') {
+      setSelectedItem(item);
+      setFormVisible(true);
+    }
+
+    if (type === 'delete') {
+      deleteCategory(item);
+    }
+  };
+
+  var deleteCategory = function deleteCategory(record) {
+    confirm({
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u5220\u9664\u8BE5".concat(title, "\u5417?"),
+      content: "".concat(title, ": ").concat(record.name),
+      okText: '确定',
+      cancelText: '取消',
+      onOk: function () {
+        var _onOk = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  _context2.next = 2;
+                  return api.post("".concat(apiPath, "/del?id=").concat(record.id));
+
+                case 2:
+                  message.success("\u5220\u9664".concat(title, "\u6210\u529F"));
+                  fetchItems();
+
+                case 4:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2);
+        }));
+
+        function onOk() {
+          return _onOk.apply(this, arguments);
+        }
+
+        return onOk;
+      }(),
+      onCancel: function onCancel() {
+        console.log('Cancel');
+      }
+    });
+  };
+
+  var getColumns = function getColumns(maxLevel) {
+    return [{
+      dataIndex: 'pid',
+      hideInList: true,
+      form: {
+        comp: 'FormInput',
+        hide: true
+      }
+    }, {
+      title: '父级',
+      dataIndex: 'parent',
+      hideInList: true,
+      form: {
+        comp: 'FormInput',
+        disabled: true,
+        required: false
+      }
+    }].concat(_toConsumableArray(columns), [{
+      title: '操作',
+      valueType: 'option',
+      width: 200,
+      render: function render(_, record) {
+        return [/*#__PURE__*/React.createElement(Dropdown, {
+          key: "add",
+          overlay: getMenu(record, maxLevel)
+        }, /*#__PURE__*/React.createElement("a", {
+          className: "ant-dropdown-link",
+          onClick: function onClick(e) {
+            return e.preventDefault();
+          }
+        }, "\u6DFB\u52A0 ", /*#__PURE__*/React.createElement(DownOutlined, null))), /*#__PURE__*/React.createElement("a", {
+          key: "edit",
+          type: "edit",
+          id: record.id
+        }, "\u7F16\u8F91"), /*#__PURE__*/React.createElement("a", {
+          key: "delete",
+          type: "delete",
+          id: record.id
+        }, "\u5220\u9664")];
+      }
+    }]);
+  };
+
+  var getMenu = function getMenu(record, maxLevel) {
+    return /*#__PURE__*/React.createElement(Menu, null, /*#__PURE__*/React.createElement(Menu.Item, {
+      key: "1"
+    }, /*#__PURE__*/React.createElement("a", {
+      type: "add-current",
+      id: record.id
+    }, "\u540C\u7EA7", title)), record.level < maxLevel && /*#__PURE__*/React.createElement(Menu.Item, {
+      key: "2"
+    }, /*#__PURE__*/React.createElement("a", {
+      type: "add-next",
+      id: record.id
+    }, "\u4E0B\u7EA7", title)));
+  };
+
+  return /*#__PURE__*/React.createElement(PageCustom$1, {
+    title: title,
+    customClass: "pro-table"
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: handleAction
+  }, /*#__PURE__*/React.createElement(EditableProTable, {
+    rowKey: "id",
+    recordCreatorProps: false,
+    columns: getColumns(maxLevel).filter(function (column) {
+      return !column.hideInList;
+    }),
+    value: treeItems
+  }), formVisible && /*#__PURE__*/React.createElement(PageFormDrawer$1, {
+    formItems: getColumns(maxLevel),
+    onClose: function onClose() {
+      return setFormVisible(false);
+    },
+    defaultValues: selectedItem,
+    callback: fetchItems,
+    drawerWidth: 600
+  })));
+};
+
+var listToTree = function listToTree(list) {
+  var rootId = 1;
+  var map = {},
+      node,
+      roots = [],
+      i;
+
+  for (i = 0; i < list.length; i += 1) {
+    map[list[i].id] = i;
+  }
+
+  for (i = 0; i < list.length; i += 1) {
+    node = list[i];
+    node.level = node.hid.split(':').length - 2;
+    node.value = node.id;
+    node.label = node.name;
+
+    if (node.pid !== rootId) {
+      if (!list[map[node.pid]].children) {
+        list[map[node.pid]].children = [];
+      }
+
+      node.parent = list[map[node.pid]].name;
+      list[map[node.pid]].children.push(node);
+    } else {
+      roots.push(node);
+    }
+  }
+
+  return roots;
+};
+
+export { ErrorBoundary$1 as ErrorBoundary, PageCustom, PageFormDrawer, PageList, TreeTable, getDateRow, getImageRow, getRender, getTagRow, getTimeRow, tableOrder };
