@@ -1344,19 +1344,21 @@ var FormSelect = function FormSelect(_ref) {
       _ref$titleKey = _ref.titleKey,
       titleKey = _ref$titleKey === void 0 ? 'name' : _ref$titleKey,
       _ref$mode = _ref.mode,
-      mode = _ref$mode === void 0 ? null : _ref$mode;
+      originMode = _ref$mode === void 0 ? null : _ref$mode;
 
   if (!message) {
-    if (mode === 'tagInput') {
+    if (originMode === 'tagInput') {
       message = "\u8BF7\u8F93\u5165".concat(label, "\u6807\u7B7E");
     }
 
-    if (mode === 'tagSelect') {
+    if (originMode === 'tagSelect') {
       message = "\u8BF7\u9009\u62E9".concat(label);
     }
   }
 
-  if (['tagInput', 'tagSelect'].includes(mode)) {
+  var mode = originMode;
+
+  if (['tagInput', 'tagSelect'].includes(originMode)) {
     mode = 'tags';
   }
 
@@ -1941,6 +1943,19 @@ var PageList = function PageList(_ref) {
   }));
 };
 
+__$styleInject(".page-custom.pro-table {\n  width: calc(100% - 254px);\n}\n.page-custom .admin-form-title {\n  margin-bottom: 20px;\n}\n");
+
+var PageCustom = function PageCustom(_ref) {
+  var children = _ref.children,
+      title = _ref.title,
+      customClass = _ref.customClass;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "page page-custom admin-form ".concat(customClass)
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "admin-form-title"
+  }, title), children);
+};
+
 __$styleInject(".error-boundary {\n  width: calc(100% - 254px);\n  height: 100%;\n  display: flex;\n  align-items: center;\n  flex-direction: column;\n  justify-content: center;\n}\n.error-boundary h2 {\n  margin-top: 20px;\n  margin-left: 28px;\n}\n");
 
 var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
@@ -2004,4 +2019,4 @@ var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
 
 var ErrorBoundary$1 = withRouter(ErrorBoundary);
 
-export { ErrorBoundary$1 as ErrorBoundary, PageList, getDateRow, getImageRow, getRender, getTagRow, getTimeRow, tableOrder };
+export { ErrorBoundary$1 as ErrorBoundary, PageCustom, PageFormDrawer, PageList, getDateRow, getImageRow, getRender, getTagRow, getTimeRow, tableOrder };

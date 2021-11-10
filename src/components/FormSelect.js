@@ -12,18 +12,19 @@ const FormSelect = ({
   initialValue,
   valueKey = 'id',
   titleKey = 'name',
-  mode = null,
+  mode: originMode = null,
 }) => {
   if (!message) {
-    if (mode === 'tagInput') {
+    if (originMode === 'tagInput') {
       message = `请输入${label}标签`
     }
-    if (mode === 'tagSelect') {
+    if (originMode === 'tagSelect') {
       message = `请选择${label}`
     }
   }
 
-  if (['tagInput', 'tagSelect'].includes(mode)) {
+  let mode = originMode
+  if (['tagInput', 'tagSelect'].includes(originMode)) {
     mode = 'tags'
   }
 

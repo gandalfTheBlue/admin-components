@@ -10,6 +10,18 @@
   margin-top: 20px;
   margin-left: 28px;
 }
+.page-custom.pro-table {
+  width: calc(100% - 254px);
+}
+.page-custom .admin-form-title {
+  margin-bottom: 20px;
+}
+tr.drop-over-downward td {
+  border-bottom: 2px dashed #1890ff;
+}
+tr.drop-over-upward td {
+  border-top: 2px dashed #1890ff;
+}
 .change-password .ant-modal-body {
   padding: 24px 60px;
 }
@@ -26,12 +38,6 @@
 }
 .list-header-right input {
   margin-right: 15px;
-}
-tr.drop-over-downward td {
-  border-bottom: 2px dashed #1890ff;
-}
-tr.drop-over-upward td {
-  border-top: 2px dashed #1890ff;
 }
 .form-editor {
   display: flex;

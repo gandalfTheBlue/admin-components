@@ -1,4 +1,6 @@
 import PageList from './components/PageList'
+import PageCustom from './components/PageCustom'
+import PageFormDrawer from './components/PageFormDrawer'
 import ErrorBoundary from './components/ErrorBoundary'
 import {
   tableOrder,
@@ -11,6 +13,8 @@ import {
 
 export {
   PageList,
+  PageCustom,
+  PageFormDrawer,
   ErrorBoundary,
   tableOrder,
   getImageRow,
