@@ -1,7 +1,9 @@
+import './TreeTable.less'
+
 import { DownOutlined } from '@ant-design/icons'
 import { EditableProTable } from '@ant-design/pro-table'
 import { PageCustom, PageFormDrawer } from '@gandalftheblue/admin-components'
-import { Dropdown, Menu, message, Modal } from 'antd'
+import { Button, Dropdown, Menu, message, Modal } from 'antd'
 import React, { useCallback, useEffect, useState } from 'react'
 import useActiveRoute from 'src/hooks/useActiveRoute'
 import api from 'src/utils/api'
@@ -27,7 +29,7 @@ const TreeTable = ({ columns, maxLevel = 2 }) => {
 
   const handleAction = (e) => {
     const { type = '', id } = e.target
-    const item = items.find((item) => item.id === Number(id))
+    const item = items.find((item) => item.id === Number(id)) || { pid: 1 }
     if (type.startsWith('add')) {
       if (type === 'add-current') {
         setSelectedItem({ parent: item.parent, pid: item.pid })
@@ -126,6 +128,11 @@ const TreeTable = ({ columns, maxLevel = 2 }) => {
 
   return (
     <PageCustom title={title} customClass="pro-table">
+      <div className="list-header tree-table-header" onClick={handleAction}>
+        <Button type="primary">
+          <a type="add-current">添加第一级</a>
+        </Button>
+      </div>
       <div onClick={handleAction}>
         <EditableProTable
           rowKey="id"

@@ -2021,6 +2021,8 @@ var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
 
 var ErrorBoundary$1 = withRouter(ErrorBoundary);
 
+__$styleInject(".tree-table-header {\n  margin-left: 25px;\n}\n");
+
 var confirm = Modal.confirm;
 
 var TreeTable = function TreeTable(_ref) {
@@ -2084,7 +2086,9 @@ var TreeTable = function TreeTable(_ref) {
         id = _e$target.id;
     var item = items.find(function (item) {
       return item.id === Number(id);
-    });
+    }) || {
+      pid: 1
+    };
 
     if (type.startsWith('add')) {
       if (type === 'add-current') {
@@ -2214,6 +2218,13 @@ var TreeTable = function TreeTable(_ref) {
     title: title,
     customClass: "pro-table"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "list-header tree-table-header",
+    onClick: handleAction
+  }, /*#__PURE__*/React.createElement(Button, {
+    type: "primary"
+  }, /*#__PURE__*/React.createElement("a", {
+    type: "add-current"
+  }, "\u6DFB\u52A0\u7B2C\u4E00\u7EA7"))), /*#__PURE__*/React.createElement("div", {
     onClick: handleAction
   }, /*#__PURE__*/React.createElement(EditableProTable, {
     rowKey: "id",
