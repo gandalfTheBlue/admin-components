@@ -10,11 +10,11 @@ function __$styleInject(css) {
     return css;
 }
 
-import { Image, Tag, Form, Modal, Input, message, Table, Button, Cascader, DatePicker, Upload, Radio, InputNumber, Select, Drawer, Divider, Dropdown, Menu } from 'antd';
+import { Form, Modal, Input, message, Table, Button, Cascader, DatePicker, Upload, Radio, InputNumber, Select, Drawer, Divider, Dropdown, Menu } from 'antd';
 import React, { useState, useEffect, useCallback } from 'react';
 import useActiveRoute from 'src/hooks/useActiveRoute';
 import api from 'src/utils/api';
-import moment from 'moment';
+import 'moment';
 import { LockOutlined, LoadingOutlined, UploadOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { formLayout, formItemHide } from 'src/utils/const';
 import update from 'immutability-helper';
@@ -70,22 +70,6 @@ function _objectSpread2(target) {
   }
 
   return target;
-}
-
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function (obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
 }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -371,88 +355,12 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
-var dateFormat = 'YYYY-MM-DD';
-var timeFormat = 'YYYY-MM-DD HH:mm:ss';
-/**
- * @param {*} value long值型的时间值
- * @format {*} format 时间格式
- */
-
-var formatTime = function formatTime(value) {
-  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : dateFormat;
-
-  if (['string', 'number'].includes(_typeof(value))) {
-    return moment(value).format(format);
-  }
-
-  if (Array.isArray(value)) {
-    return value.map(function (item) {
-      return moment(item).format(format);
-    });
-  }
-
-  return [];
-};
-
 var tableOrder = {
   title: '序号',
   key: 'index',
   render: function render(text, record, index) {
     return "".concat(index + 1);
   }
-};
-var getImageRow = function getImageRow(title, dataIndex) {
-  return {
-    title: title,
-    dataIndex: dataIndex,
-    render: function render(_, record) {
-      return /*#__PURE__*/React.createElement(Image, {
-        width: 45,
-        src: record[dataIndex]
-      });
-    }
-  };
-};
-var getTagRow = function getTagRow(title, dataIndex, items) {
-  return {
-    title: title,
-    dataIndex: dataIndex,
-    render: function render(_, record) {
-      var itemIds = record[dataIndex].split(',') || [];
-      return /*#__PURE__*/React.createElement(React.Fragment, null, itemIds.map(function (id) {
-        var item = items.find(function (item) {
-          return String(item.id) === id;
-        });
-        if (!item) return null;
-        return /*#__PURE__*/React.createElement(Tag, {
-          key: item.id
-        }, item.name);
-      }));
-    }
-  };
-};
-var getDateRow = function getDateRow(title, dataIndex) {
-  return {
-    title: title,
-    dataIndex: dataIndex,
-    render: function render(_, record) {
-      return /*#__PURE__*/React.createElement("span", null, formatTime(record[dataIndex]));
-    }
-  };
-};
-var getTimeRow = function getTimeRow(title, dataIndex) {
-  return {
-    title: title,
-    dataIndex: dataIndex,
-    render: function render(_, record) {
-      return /*#__PURE__*/React.createElement("span", null, formatTime(record[dataIndex], timeFormat));
-    }
-  };
-};
-var getRender = function getRender(callback) {
-  return function (_, record) {
-    return /*#__PURE__*/React.createElement("span", null, callback(record));
-  };
 };
 
 __$styleInject(".change-password .ant-modal-body {\n  padding: 24px 60px;\n}\n.change-password .ant-modal-body .ant-form-item {\n  margin-bottom: 10px;\n}\n.change-password .ant-modal-body .ant-form-item-label {\n  margin-right: 20px;\n}\n");
@@ -2276,4 +2184,4 @@ var listToTree = function listToTree(list) {
   return roots;
 };
 
-export { ErrorBoundary$1 as ErrorBoundary, PageCustom, PageFormDrawer, PageList, TreeTable, getDateRow, getImageRow, getRender, getTagRow, getTimeRow, tableOrder };
+export { ErrorBoundary$1 as ErrorBoundary, PageCustom, PageFormDrawer, PageList, TreeTable };
