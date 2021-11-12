@@ -902,7 +902,8 @@ var FormEnableRadio = function FormEnableRadio(_ref) {
 var FileUpload = function FileUpload(_ref) {
   var callback = _ref.callback,
       accept = _ref.accept,
-      fileUrl = _ref.fileUrl;
+      fileUrl = _ref.fileUrl,
+      onRemove = _ref.onRemove;
 
   var _useState = useState([]),
       _useState2 = _slicedToArray(_useState, 2),
@@ -923,6 +924,7 @@ var FileUpload = function FileUpload(_ref) {
     name: 'file',
     maxCount: 1,
     action: apiBaseFile,
+    onRemove: onRemove,
     onChange: function onChange(info) {
       setFileList(info.fileList);
 
@@ -962,6 +964,10 @@ var FormFile = function FormFile(_ref) {
     form.setFieldsValue(_defineProperty({}, name, fileUrl));
   };
 
+  var handleOnRemove = function handleOnRemove() {
+    form.setFieldsValue(_defineProperty({}, name, null));
+  };
+
   return /*#__PURE__*/React.createElement(Form.Item, {
     rules: [{
       required: required,
@@ -973,6 +979,7 @@ var FormFile = function FormFile(_ref) {
       setUrl(form.getFieldValue(name));
     }
   }, /*#__PURE__*/React.createElement(FileUpload, {
+    onRemove: handleOnRemove,
     callback: handleFileChange,
     fileUrl: url,
     accept: accept

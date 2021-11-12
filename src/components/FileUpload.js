@@ -3,7 +3,7 @@ import { Button, Upload } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { apiBaseFile } from 'src/config'
 
-const FileUpload = ({ callback, accept, fileUrl }) => {
+const FileUpload = ({ callback, accept, fileUrl, onRemove }) => {
   const [fileList, setFileList] = useState([])
 
   useEffect(() => {
@@ -17,6 +17,7 @@ const FileUpload = ({ callback, accept, fileUrl }) => {
     name: 'file',
     maxCount: 1,
     action: apiBaseFile,
+    onRemove,
     onChange(info) {
       setFileList(info.fileList)
       if (info.file.status === 'done') {

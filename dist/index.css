@@ -19,6 +19,29 @@
   margin-top: 20px;
   margin-left: 28px;
 }
+tr.drop-over-downward td {
+  border-bottom: 2px dashed #1890ff;
+}
+tr.drop-over-upward td {
+  border-top: 2px dashed #1890ff;
+}
+.change-password .ant-modal-body {
+  padding: 24px 60px;
+}
+.change-password .ant-modal-body .ant-form-item {
+  margin-bottom: 10px;
+}
+.change-password .ant-modal-body .ant-form-item-label {
+  margin-right: 20px;
+}
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.list-header-right input {
+  margin-right: 15px;
+}
 .form-editor {
   display: flex;
   margin: 0 50px 20px 50px;
@@ -31,29 +54,6 @@
 }
 .form-editor .ant-row {
   width: 0;
-}
-.change-password .ant-modal-body {
-  padding: 24px 60px;
-}
-.change-password .ant-modal-body .ant-form-item {
-  margin-bottom: 10px;
-}
-.change-password .ant-modal-body .ant-form-item-label {
-  margin-right: 20px;
-}
-tr.drop-over-downward td {
-  border-bottom: 2px dashed #1890ff;
-}
-tr.drop-over-upward td {
-  border-top: 2px dashed #1890ff;
-}
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-.list-header-right input {
-  margin-right: 15px;
 }
 .form-input-number {
   width: 100%;

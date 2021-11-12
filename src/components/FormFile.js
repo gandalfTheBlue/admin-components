@@ -26,6 +26,12 @@ const FormFile = ({
     })
   }
 
+  const handleOnRemove = () => {
+    form.setFieldsValue({
+      [name]: null,
+    })
+  }
+
   return (
     <Form.Item
       rules={[{ required, message }]}
@@ -35,7 +41,12 @@ const FormFile = ({
         setUrl(form.getFieldValue(name))
       }}
     >
-      <FileUpload callback={handleFileChange} fileUrl={url} accept={accept} />
+      <FileUpload
+        onRemove={handleOnRemove}
+        callback={handleFileChange}
+        fileUrl={url}
+        accept={accept}
+      />
     </Form.Item>
   )
 }
