@@ -1541,7 +1541,8 @@ var PageList = function PageList(_ref) {
       isPassword = _useActiveRoute.isPassword,
       isHeaderItem = _useActiveRoute.isHeaderItem,
       isCopy = _useActiveRoute.isCopy,
-      actionWidth = _useActiveRoute.actionWidth;
+      actionWidth = _useActiveRoute.actionWidth,
+      isCompany = _useActiveRoute.isCompany;
 
   var fetchPath = path !== null && path !== void 0 ? path : "".concat(apiPath, "/page");
   var tableList = useTableFetch(fetchPath);
@@ -1772,7 +1773,7 @@ var PageList = function PageList(_ref) {
         }
       }, "\u7F16\u8F91"), /*#__PURE__*/React.createElement(Divider, {
         type: "vertical"
-      }), /*#__PURE__*/React.createElement("span", {
+      }), !isCompany && /*#__PURE__*/React.createElement("span", {
         className: "table-action",
         onClick: function onClick() {
           return deleteEntity(record);
@@ -1837,7 +1838,7 @@ var PageList = function PageList(_ref) {
   }, /*#__PURE__*/React.createElement("div", {
     className: "page-list-title"
   }, title, "\u5217\u8868"), /*#__PURE__*/React.createElement(ListHeader, _extends({}, tableList, {
-    showAdd: true,
+    showAdd: !isCompany || isCompany && !tableList.dataSource.length,
     placeholder: "\u8BF7\u8F93\u5165\u67E5\u8BE2\u6761\u4EF6",
     addCallback: handleAdd,
     deleteCallback: showRowSelection ? handleBatchDelete : null

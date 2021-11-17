@@ -34,6 +34,7 @@ const PageList = ({
     isHeaderItem,
     isCopy,
     actionWidth,
+    isCompany,
   } = useActiveRoute()
   const fetchPath = path ?? `${apiPath}/page`
   const tableList = useTableFetch(fetchPath)
@@ -179,9 +180,11 @@ const PageList = ({
           编辑
         </span>
         <Divider type="vertical" />
-        <span className="table-action" onClick={() => deleteEntity(record)}>
-          删除
-        </span>
+        {!isCompany && (
+          <span className="table-action" onClick={() => deleteEntity(record)}>
+            删除
+          </span>
+        )}
         {isPublish && (
           <>
             <Divider type="vertical" />
@@ -257,7 +260,7 @@ const PageList = ({
       <div className="page-list-title">{title}列表</div>
       <ListHeader
         {...tableList}
-        showAdd={true}
+        showAdd={!isCompany || (isCompany && !tableList.dataSource.length)}
         placeholder="请输入查询条件"
         addCallback={handleAdd}
         deleteCallback={showRowSelection ? handleBatchDelete : null}

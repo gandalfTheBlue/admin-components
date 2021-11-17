@@ -1,12 +1,3 @@
-.page-custom.pro-table {
-  width: calc(100% - 254px);
-}
-.page-custom .admin-form-title {
-  margin-bottom: 20px;
-}
-.tree-table-header {
-  margin-left: 25px;
-}
 .error-boundary {
   width: calc(100% - 254px);
   height: 100%;
@@ -19,20 +10,14 @@
   margin-top: 20px;
   margin-left: 28px;
 }
-tr.drop-over-downward td {
-  border-bottom: 2px dashed #1890ff;
+.tree-table-header {
+  margin-left: 25px;
 }
-tr.drop-over-upward td {
-  border-top: 2px dashed #1890ff;
+.page-custom.pro-table {
+  width: calc(100% - 254px);
 }
-.change-password .ant-modal-body {
-  padding: 24px 60px;
-}
-.change-password .ant-modal-body .ant-form-item {
-  margin-bottom: 10px;
-}
-.change-password .ant-modal-body .ant-form-item-label {
-  margin-right: 20px;
+.page-custom .admin-form-title {
+  margin-bottom: 20px;
 }
 .list-header {
   display: flex;
@@ -54,6 +39,21 @@ tr.drop-over-upward td {
 }
 .form-editor .ant-row {
   width: 0;
+}
+tr.drop-over-downward td {
+  border-bottom: 2px dashed #1890ff;
+}
+tr.drop-over-upward td {
+  border-top: 2px dashed #1890ff;
+}
+.change-password .ant-modal-body {
+  padding: 24px 60px;
+}
+.change-password .ant-modal-body .ant-form-item {
+  margin-bottom: 10px;
+}
+.change-password .ant-modal-body .ant-form-item-label {
+  margin-right: 20px;
 }
 .form-input-number {
   width: 100%;
