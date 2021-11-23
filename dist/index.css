@@ -1,3 +1,9 @@
+.page-custom.pro-table {
+  width: calc(100% - 254px);
+}
+.page-custom .admin-form-title {
+  margin-bottom: 20px;
+}
 .error-boundary {
   width: calc(100% - 254px);
   height: 100%;
@@ -13,11 +19,11 @@
 .tree-table-header {
   margin-left: 25px;
 }
-.page-custom.pro-table {
-  width: calc(100% - 254px);
+tr.drop-over-downward td {
+  border-bottom: 2px dashed #1890ff;
 }
-.page-custom .admin-form-title {
-  margin-bottom: 20px;
+tr.drop-over-upward td {
+  border-top: 2px dashed #1890ff;
 }
 .list-header {
   display: flex;
@@ -27,24 +33,8 @@
 .list-header-right input {
   margin-right: 15px;
 }
-.form-editor {
-  display: flex;
-  margin: 0 50px 20px 50px;
-}
-.form-editor > span {
-  min-width: 60px;
-}
-.form-editor .bf-container {
-  border: 1px solid #d9d9d9;
-}
-.form-editor .ant-row {
-  width: 0;
-}
-tr.drop-over-downward td {
-  border-bottom: 2px dashed #1890ff;
-}
-tr.drop-over-upward td {
-  border-top: 2px dashed #1890ff;
+.form-input-number {
+  width: 100%;
 }
 .change-password .ant-modal-body {
   padding: 24px 60px;
@@ -55,6 +45,22 @@ tr.drop-over-upward td {
 .change-password .ant-modal-body .ant-form-item-label {
   margin-right: 20px;
 }
-.form-input-number {
+.form-editor {
+  display: flex;
+  margin: 0 50px 20px 50px;
+}
+.form-editor > span {
+  min-width: 100px;
+  text-align: right;
+  margin-right: 10px;
+}
+.form-editor .bf-container {
+  border: 1px solid #d9d9d9;
   width: 100%;
+}
+.form-editor .ant-row {
+  width: 0;
+}
+.form-editor-list .bf-content {
+  height: 200px;
 }

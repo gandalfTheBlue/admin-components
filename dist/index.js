@@ -786,7 +786,7 @@ var FormDate = function FormDate(_ref) {
   }));
 };
 
-__$styleInject(".form-editor {\n  display: flex;\n  margin: 0 50px 20px 50px;\n}\n.form-editor > span {\n  min-width: 60px;\n}\n.form-editor .bf-container {\n  border: 1px solid #d9d9d9;\n}\n.form-editor .ant-row {\n  width: 0;\n}\n");
+__$styleInject(".form-editor {\n  display: flex;\n  margin: 0 50px 20px 50px;\n}\n.form-editor > span {\n  min-width: 100px;\n  text-align: right;\n  margin-right: 10px;\n}\n.form-editor .bf-container {\n  border: 1px solid #d9d9d9;\n  width: 100%;\n}\n.form-editor .ant-row {\n  width: 0;\n}\n.form-editor-list .bf-content {\n  height: 200px;\n}\n");
 
 var FormEditor = function FormEditor(_ref) {
   var form = _ref.form,
@@ -794,7 +794,8 @@ var FormEditor = function FormEditor(_ref) {
       name = _ref.name,
       initialValue = _ref.initialValue,
       _ref$maxSize = _ref.maxSize,
-      maxSize = _ref$maxSize === void 0 ? 100 : _ref$maxSize;
+      maxSize = _ref$maxSize === void 0 ? 100 : _ref$maxSize,
+      mode = _ref.mode;
 
   var _useState = useState(false),
       _useState2 = _slicedToArray(_useState, 2),
@@ -863,6 +864,24 @@ var FormEditor = function FormEditor(_ref) {
       className: "control-item button upload-button"
     }, !isUploading && /*#__PURE__*/React.createElement("span", null, "\u63D2\u5165\u56FE\u7247/\u97F3\u89C6\u9891"), isUploading && /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement(LoadingOutlined, null), "\u6587\u4EF6\u4E0A\u4F20\u4E2D")))
   }];
+
+  if (mode === 'list') {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "form-editor form-editor-list"
+    }, /*#__PURE__*/React.createElement("span", null, label, ": "), /*#__PURE__*/React.createElement(BraftEditor, {
+      value: editorState,
+      onChange: handleEditorChange,
+      controls: ['list-ul', 'list-ol']
+    }), /*#__PURE__*/React.createElement(Form.Item, {
+      label: label,
+      name: name,
+      style: {
+        visibility: 'hidden',
+        width: 0
+      }
+    }));
+  }
+
   return /*#__PURE__*/React.createElement("div", {
     className: "form-editor"
   }, /*#__PURE__*/React.createElement("span", null, label, ": "), /*#__PURE__*/React.createElement(BraftEditor, {

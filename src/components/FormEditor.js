@@ -8,7 +8,14 @@ import { ContentUtils } from 'braft-utils'
 import React, { useState } from 'react'
 import { apiBaseImg } from 'src/config'
 
-const FormEditor = ({ form, label, name, initialValue, maxSize = 100 }) => {
+const FormEditor = ({
+  form,
+  label,
+  name,
+  initialValue,
+  maxSize = 100,
+  mode,
+}) => {
   const [isUploading, setIsUploading] = useState(false)
 
   const [editorState, setEditorState] = useState(
@@ -81,6 +88,24 @@ const FormEditor = ({ form, label, name, initialValue, maxSize = 100 }) => {
       ),
     },
   ]
+
+  if (mode === 'list') {
+    return (
+      <div className="form-editor form-editor-list">
+        <span>{label}: </span>
+        <BraftEditor
+          value={editorState}
+          onChange={handleEditorChange}
+          controls={['list-ul', 'list-ol']}
+        />
+        <Form.Item
+          label={label}
+          name={name}
+          style={{ visibility: 'hidden', width: 0 }}
+        ></Form.Item>
+      </div>
+    )
+  }
 
   return (
     <div className="form-editor">
