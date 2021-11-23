@@ -688,7 +688,9 @@ var ListHeader = function ListHeader(_ref) {
       placeholder = _ref$placeholder === void 0 ? '请输入查询条件' : _ref$placeholder,
       showAdd = _ref.showAdd,
       addCallback = _ref.addCallback,
-      deleteCallback = _ref.deleteCallback;
+      deleteCallback = _ref.deleteCallback,
+      isBatchPublish = _ref.isBatchPublish,
+      handleBatchPublish = _ref.handleBatchPublish;
 
   var _useState = useState((_defaultSearch$keywor = defaultSearch === null || defaultSearch === void 0 ? void 0 : defaultSearch.keyword) !== null && _defaultSearch$keywor !== void 0 ? _defaultSearch$keywor : ''),
       _useState2 = _slicedToArray(_useState, 2),
@@ -725,6 +727,22 @@ var ListHeader = function ListHeader(_ref) {
       visibility: showAdd ? 'visible' : 'hidden'
     }
   }, "\u65B0\u589E"), /*#__PURE__*/React.createElement(Button, {
+    onClick: function onClick() {
+      return handleBatchPublish(true);
+    },
+    style: {
+      visibility: isBatchPublish ? 'visible' : 'hidden',
+      marginLeft: 10
+    }
+  }, "\u6279\u91CF\u53D1\u5E03"), /*#__PURE__*/React.createElement(Button, {
+    onClick: function onClick() {
+      return handleBatchPublish(false);
+    },
+    style: {
+      visibility: isBatchPublish ? 'visible' : 'hidden',
+      marginLeft: 10
+    }
+  }, "\u6279\u91CF\u53D6\u6D88\u53D1\u5E03"), /*#__PURE__*/React.createElement(Button, {
     onClick: handleDelete,
     style: {
       visibility: deleteCallback ? 'visible' : 'hidden',
@@ -1555,6 +1573,7 @@ var PageList = function PageList(_ref) {
       titleProp = _useActiveRoute$title === void 0 ? 'name' : _useActiveRoute$title,
       apiPath = _useActiveRoute.apiPath,
       isPublish = _useActiveRoute.isPublish,
+      isBatchPublish = _useActiveRoute.isBatchPublish,
       isInIndex = _useActiveRoute.isInIndex,
       isEnable = _useActiveRoute.isEnable,
       isPassword = _useActiveRoute.isPassword,
@@ -1744,9 +1763,17 @@ var PageList = function PageList(_ref) {
     });
   };
 
-  var setHeaderItem = function setHeaderItem(record) {
+  var handleBatchPublish = function handleBatchPublish(isPublish) {
+    var status = isPublish ? '发布' : '取消发布';
+    var selectedRowKeys = tableList.rowSelection.selectedRowKeys;
+
+    if (!selectedRowKeys.length) {
+      message.warn("\u8BF7\u5148\u9009\u62E9\u8981\u64CD\u4F5C\u7684".concat(title));
+      return;
+    }
+
     confirm$1({
-      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u8BBE\u7F6E\u8BE5\u65B0\u95FB\u4E3A\u5934\u90E8\u65B0\u95FB\u5417?",
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981".concat(status, "\u9009\u4E2D\u7684").concat(title, "\u5417?"),
       okText: '确定',
       cancelText: '取消',
       onOk: function () {
@@ -1756,10 +1783,10 @@ var PageList = function PageList(_ref) {
               switch (_context3.prev = _context3.next) {
                 case 0:
                   _context3.next = 2;
-                  return api.post("".concat(apiPath, "/headerItem?id=").concat(record.id));
+                  return api.post("".concat(apiPath, "/batch-publish?isPublish=").concat(isPublish, "&ids=").concat(selectedRowKeys.join(',')));
 
                 case 2:
-                  message.success("\u6279\u91CF\u5934\u90E8\u65B0\u95FB\u6210\u529F");
+                  message.success("\u6279\u91CF".concat(status).concat(title, "\u6210\u529F"));
                   tableList.fetchTable();
 
                 case 4:
@@ -1772,6 +1799,42 @@ var PageList = function PageList(_ref) {
 
         function onOk() {
           return _onOk3.apply(this, arguments);
+        }
+
+        return onOk;
+      }(),
+      onCancel: function onCancel() {}
+    });
+  };
+
+  var setHeaderItem = function setHeaderItem(record) {
+    confirm$1({
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u8BBE\u7F6E\u8BE5\u65B0\u95FB\u4E3A\u5934\u90E8\u65B0\u95FB\u5417?",
+      okText: '确定',
+      cancelText: '取消',
+      onOk: function () {
+        var _onOk4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+          return regeneratorRuntime.wrap(function _callee4$(_context4) {
+            while (1) {
+              switch (_context4.prev = _context4.next) {
+                case 0:
+                  _context4.next = 2;
+                  return api.post("".concat(apiPath, "/headerItem?id=").concat(record.id));
+
+                case 2:
+                  message.success("\u6279\u91CF\u5934\u90E8\u65B0\u95FB\u6210\u529F");
+                  tableList.fetchTable();
+
+                case 4:
+                case "end":
+                  return _context4.stop();
+              }
+            }
+          }, _callee4);
+        }));
+
+        function onOk() {
+          return _onOk4.apply(this, arguments);
         }
 
         return onOk;
@@ -1860,7 +1923,9 @@ var PageList = function PageList(_ref) {
     showAdd: !isCompany || isCompany && !tableList.dataSource.length,
     placeholder: "\u8BF7\u8F93\u5165\u67E5\u8BE2\u6761\u4EF6",
     addCallback: handleAdd,
-    deleteCallback: showRowSelection ? handleBatchDelete : null
+    deleteCallback: showRowSelection ? handleBatchDelete : null,
+    isBatchPublish: isBatchPublish,
+    handleBatchPublish: handleBatchPublish
   })), /*#__PURE__*/React.createElement(CustomTable, _extends({}, tableList, {
     columns: [tableOrder].concat(_toConsumableArray(listColumns), [actionRow]),
     rowKey: "id",

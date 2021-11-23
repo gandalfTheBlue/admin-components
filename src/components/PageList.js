@@ -28,6 +28,7 @@ const PageList = ({
     titleProp = 'name',
     apiPath,
     isPublish,
+    isBatchPublish,
     isInIndex,
     isEnable,
     isPassword,
@@ -156,6 +157,31 @@ const PageList = ({
     })
   }
 
+  const handleBatchPublish = (isPublish) => {
+    const status = isPublish ? '发布' : '取消发布'
+    const { selectedRowKeys } = tableList.rowSelection
+    if (!selectedRowKeys.length) {
+      message.warn(`请先选择要操作的${title}`)
+      return
+    }
+
+    confirm({
+      title: `请问您确认要${status}选中的${title}吗?`,
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        await api.post(
+          `${apiPath}/batch-publish?isPublish=${isPublish}&ids=${selectedRowKeys.join(
+            ','
+          )}`
+        )
+        message.success(`批量${status}${title}成功`)
+        tableList.fetchTable()
+      },
+      onCancel() {},
+    })
+  }
+
   const setHeaderItem = (record) => {
     confirm({
       title: `请问您确认要设置该新闻为头部新闻吗?`,
@@ -264,6 +290,8 @@ const PageList = ({
         placeholder="请输入查询条件"
         addCallback={handleAdd}
         deleteCallback={showRowSelection ? handleBatchDelete : null}
+        isBatchPublish={isBatchPublish}
+        handleBatchPublish={handleBatchPublish}
       />
       <CustomTable
         {...tableList}

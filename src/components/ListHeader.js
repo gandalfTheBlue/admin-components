@@ -10,6 +10,8 @@ const ListHeader = ({
   showAdd,
   addCallback,
   deleteCallback,
+  isBatchPublish,
+  handleBatchPublish,
 }) => {
   const [search, setSearch] = useState(defaultSearch?.keyword ?? '')
 
@@ -39,6 +41,24 @@ const ListHeader = ({
           style={{ visibility: showAdd ? 'visible' : 'hidden' }}
         >
           新增
+        </Button>
+        <Button
+          onClick={() => handleBatchPublish(true)}
+          style={{
+            visibility: isBatchPublish ? 'visible' : 'hidden',
+            marginLeft: 10,
+          }}
+        >
+          批量发布
+        </Button>
+        <Button
+          onClick={() => handleBatchPublish(false)}
+          style={{
+            visibility: isBatchPublish ? 'visible' : 'hidden',
+            marginLeft: 10,
+          }}
+        >
+          批量取消发布
         </Button>
         <Button
           onClick={handleDelete}
