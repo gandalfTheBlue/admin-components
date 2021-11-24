@@ -14,7 +14,7 @@ import { Form, Modal, Input, message, Table, Button, Cascader, DatePicker, Uploa
 import React, { useState, useEffect, useCallback } from 'react';
 import useActiveRoute from 'src/hooks/useActiveRoute';
 import api from 'src/utils/api';
-import 'moment';
+import moment from 'moment';
 import { LockOutlined, LoadingOutlined, UploadOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { formLayout, formItemHide } from 'src/utils/const';
 import update from 'immutability-helper';
@@ -720,21 +720,17 @@ var ListHeader = function ListHeader(_ref) {
 
   return /*#__PURE__*/React.createElement("div", {
     className: "list-header"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Button, {
+  }, /*#__PURE__*/React.createElement("div", null, showAdd && /*#__PURE__*/React.createElement(Button, {
     type: "primary",
-    onClick: handleAdd,
-    style: {
-      visibility: showAdd ? 'visible' : 'hidden'
-    }
-  }, "\u65B0\u589E"), /*#__PURE__*/React.createElement(Button, {
+    onClick: handleAdd
+  }, "\u65B0\u589E"), isBatchPublish && /*#__PURE__*/React.createElement(Button, {
     onClick: function onClick() {
       return handleBatchPublish(true);
     },
     style: {
-      visibility: isBatchPublish ? 'visible' : 'hidden',
       marginLeft: 10
     }
-  }, "\u6279\u91CF\u53D1\u5E03"), /*#__PURE__*/React.createElement(Button, {
+  }, "\u6279\u91CF\u53D1\u5E03"), isBatchPublish && /*#__PURE__*/React.createElement(Button, {
     onClick: function onClick() {
       return handleBatchPublish(false);
     },
@@ -742,7 +738,7 @@ var ListHeader = function ListHeader(_ref) {
       visibility: isBatchPublish ? 'visible' : 'hidden',
       marginLeft: 10
     }
-  }, "\u6279\u91CF\u53D6\u6D88\u53D1\u5E03"), /*#__PURE__*/React.createElement(Button, {
+  }, "\u6279\u91CF\u53D6\u6D88\u53D1\u5E03"), deleteCallback && /*#__PURE__*/React.createElement(Button, {
     onClick: handleDelete,
     style: {
       visibility: deleteCallback ? 'visible' : 'hidden',
@@ -792,12 +788,13 @@ var FormCascader = function FormCascader(_ref) {
 var FormDate = function FormDate(_ref) {
   var label = _ref.label,
       name = _ref.name,
-      disabledDate = _ref.disabledDate;
+      disabledDate = _ref.disabledDate,
+      required = _ref.required;
   return /*#__PURE__*/React.createElement(Form.Item, {
     label: label,
     name: name,
     rules: [{
-      required: true
+      required: required
     }]
   }, /*#__PURE__*/React.createElement(DatePicker, {
     disabledDate: disabledDate
@@ -1389,6 +1386,11 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
     item.separator = separators["".concat(item.form.mode)];
     return item;
   });
+  var dateItems = formItems.filter(function (item) {
+    var _item$form2;
+
+    return ((_item$form2 = item.form) === null || _item$form2 === void 0 ? void 0 : _item$form2.comp) === 'FormDate';
+  });
   var resetFields = useCallback(function () {
     var fields = form.getFieldsValue();
     form.setFields(Object.keys(fields).map(function (name) {
@@ -1408,10 +1410,14 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
         var itemValue = entity[itemName];
         entity[itemName] = itemValue ? String(itemValue).split(separator) : [];
       });
+      dateItems.forEach(function (item) {
+        var itemName = item.dataIndex;
+        entity[itemName] = moment(entity[itemName]);
+      });
       form.setFieldsValue(entity);
       resetFields();
     }
-  }, [entity, form, initValues, resetFields, tagItems]);
+  }, [dateItems, entity, form, initValues, resetFields, tagItems]);
 
   var handleClose = function handleClose() {
     resetFields();
@@ -1437,15 +1443,23 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
                     separator = item.separator;
                 values[itemName] = (_values$itemName = values[itemName]) === null || _values$itemName === void 0 ? void 0 : _values$itemName.join(separator);
               });
-              _context.next = 5;
+              dateItems.forEach(function (item) {
+                var itemName = item.dataIndex,
+                    format = item.format;
+
+                if (values[itemName]) {
+                  values[itemName] = moment(values[itemName]).format(format !== null && format !== void 0 ? format : 'YYYY-MM-DD HH:mm:ss');
+                }
+              });
+              _context.next = 6;
               return api.post(getFormPath(apiPath), values);
 
-            case 5:
+            case 6:
               message.success("".concat(status).concat(title, "\u6210\u529F"));
               handleClose();
               callback && callback();
 
-            case 8:
+            case 9:
             case "end":
               return _context.stop();
           }

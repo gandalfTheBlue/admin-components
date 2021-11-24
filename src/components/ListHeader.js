@@ -35,40 +35,43 @@ const ListHeader = ({
   return (
     <div className="list-header">
       <div>
-        <Button
-          type="primary"
-          onClick={handleAdd}
-          style={{ visibility: showAdd ? 'visible' : 'hidden' }}
-        >
-          新增
-        </Button>
-        <Button
-          onClick={() => handleBatchPublish(true)}
-          style={{
-            visibility: isBatchPublish ? 'visible' : 'hidden',
-            marginLeft: 10,
-          }}
-        >
-          批量发布
-        </Button>
-        <Button
-          onClick={() => handleBatchPublish(false)}
-          style={{
-            visibility: isBatchPublish ? 'visible' : 'hidden',
-            marginLeft: 10,
-          }}
-        >
-          批量取消发布
-        </Button>
-        <Button
-          onClick={handleDelete}
-          style={{
-            visibility: deleteCallback ? 'visible' : 'hidden',
-            marginLeft: 10,
-          }}
-        >
-          批量删除
-        </Button>
+        {showAdd && (
+          <Button type="primary" onClick={handleAdd}>
+            新增
+          </Button>
+        )}
+        {isBatchPublish && (
+          <Button
+            onClick={() => handleBatchPublish(true)}
+            style={{
+              marginLeft: 10,
+            }}
+          >
+            批量发布
+          </Button>
+        )}
+        {isBatchPublish && (
+          <Button
+            onClick={() => handleBatchPublish(false)}
+            style={{
+              visibility: isBatchPublish ? 'visible' : 'hidden',
+              marginLeft: 10,
+            }}
+          >
+            批量取消发布
+          </Button>
+        )}
+        {deleteCallback && (
+          <Button
+            onClick={handleDelete}
+            style={{
+              visibility: deleteCallback ? 'visible' : 'hidden',
+              marginLeft: 10,
+            }}
+          >
+            批量删除
+          </Button>
+        )}
       </div>
       <div className="list-header-right">
         <Input

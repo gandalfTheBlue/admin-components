@@ -1,9 +1,9 @@
 import { DatePicker, Form } from 'antd'
 import React from 'react'
 
-const FormDate = ({ label, name, disabledDate }) => {
+const FormDate = ({ label, name, disabledDate, required }) => {
   return (
-    <Form.Item label={label} name={name} rules={[{ required: true }]}>
+    <Form.Item label={label} name={name} rules={[{ required }]}>
       <DatePicker disabledDate={disabledDate} />
     </Form.Item>
   )

@@ -1,4 +1,5 @@
 import { Button, Drawer, Form, message, Modal } from 'antd'
+import moment from 'moment'
 import React, { useCallback, useEffect } from 'react'
 import useActiveRoute from 'src/hooks/useActiveRoute'
 import usePageForm from 'src/hooks/usePageForm'
@@ -56,6 +57,8 @@ const PageFormDrawer = ({
       return item
     })
 
+  const dateItems = formItems.filter((item) => item.form?.comp === 'FormDate')
+
   const resetFields = useCallback(() => {
     const fields = form.getFieldsValue()
     form.setFields(
@@ -75,10 +78,15 @@ const PageFormDrawer = ({
         const itemValue = entity[itemName]
         entity[itemName] = itemValue ? String(itemValue).split(separator) : []
       })
+
+      dateItems.forEach((item) => {
+        const { dataIndex: itemName } = item
+        entity[itemName] = moment(entity[itemName])
+      })
       form.setFieldsValue(entity)
       resetFields()
     }
-  }, [entity, form, initValues, resetFields, tagItems])
+  }, [dateItems, entity, form, initValues, resetFields, tagItems])
 
   const handleClose = () => {
     resetFields()
@@ -93,6 +101,14 @@ const PageFormDrawer = ({
     tagItems.forEach((item) => {
       const { dataIndex: itemName, separator } = item
       values[itemName] = values[itemName]?.join(separator)
+    })
+    dateItems.forEach((item) => {
+      const { dataIndex: itemName, format } = item
+      if (values[itemName]) {
+        values[itemName] = moment(values[itemName]).format(
+          format ?? 'YYYY-MM-DD HH:mm:ss'
+        )
+      }
     })
     await api.post(getFormPath(apiPath), values)
     message.success(`${status}${title}成功`)
