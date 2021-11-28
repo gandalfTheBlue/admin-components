@@ -1592,9 +1592,11 @@ var PageList = function PageList(_ref) {
       isEnable = _useActiveRoute.isEnable,
       isPassword = _useActiveRoute.isPassword,
       isHeaderItem = _useActiveRoute.isHeaderItem,
+      isMultipleHeaderItem = _useActiveRoute.isMultipleHeaderItem,
       isCopy = _useActiveRoute.isCopy,
       actionWidth = _useActiveRoute.actionWidth,
-      isCompany = _useActiveRoute.isCompany;
+      isCompany = _useActiveRoute.isCompany,
+      isNoOrder = _useActiveRoute.isNoOrder;
 
   var fetchPath = path !== null && path !== void 0 ? path : "".concat(apiPath, "/page");
   var tableList = useTableFetch(fetchPath);
@@ -1857,6 +1859,44 @@ var PageList = function PageList(_ref) {
     });
   };
 
+  var setMultipleHeaderItem = function setMultipleHeaderItem(record) {
+    var isHeaderItem = record.isHeaderItem;
+    var status = isHeaderItem ? '取消' : '设置';
+    confirm$1({
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981".concat(status, "\u8BE5\u65B0\u95FB\u4E3A\u5934\u90E8\u65B0\u95FB\u5417?"),
+      okText: '确定',
+      cancelText: '取消',
+      onOk: function () {
+        var _onOk5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+          return regeneratorRuntime.wrap(function _callee5$(_context5) {
+            while (1) {
+              switch (_context5.prev = _context5.next) {
+                case 0:
+                  _context5.next = 2;
+                  return api.post("".concat(apiPath, "/headerItem?isHeaderItem=").concat(!isHeaderItem, "&id=").concat(record.id));
+
+                case 2:
+                  message.success("".concat(status, "\u5934\u90E8\u65B0\u95FB\u6210\u529F"));
+                  tableList.fetchTable();
+
+                case 4:
+                case "end":
+                  return _context5.stop();
+              }
+            }
+          }, _callee5);
+        }));
+
+        function onOk() {
+          return _onOk5.apply(this, arguments);
+        }
+
+        return onOk;
+      }(),
+      onCancel: function onCancel() {}
+    });
+  };
+
   var actionRow = {
     title: '操作',
     key: 'action',
@@ -1909,7 +1949,14 @@ var PageList = function PageList(_ref) {
         onClick: function onClick() {
           return setHeaderItem(record);
         }
-      }, "\u8BBE\u4E3A\u5934\u90E8\u65B0\u95FB")), isCopy && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+      }, "\u8BBE\u4E3A\u5934\u90E8\u65B0\u95FB")), isMultipleHeaderItem && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React.createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return setMultipleHeaderItem(record);
+        }
+      }, record.isHeaderItem ? '取消头部新闻' : '设为头部新闻')), isCopy && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
         type: "vertical"
       }), /*#__PURE__*/React.createElement("span", {
         className: "table-action",
@@ -1929,6 +1976,12 @@ var PageList = function PageList(_ref) {
     setSelectedEntity();
   };
 
+  var finalColumns = [].concat(_toConsumableArray(listColumns), [actionRow]);
+
+  if (!isNoOrder) {
+    finalColumns.unshift(tableOrder);
+  }
+
   return /*#__PURE__*/React.createElement("div", {
     className: "page page-list"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1941,7 +1994,7 @@ var PageList = function PageList(_ref) {
     isBatchPublish: isBatchPublish,
     handleBatchPublish: handleBatchPublish
   })), /*#__PURE__*/React.createElement(CustomTable, _extends({}, tableList, {
-    columns: [tableOrder].concat(_toConsumableArray(listColumns), [actionRow]),
+    columns: finalColumns,
     rowKey: "id",
     size: "middle",
     showRowSelection: showRowSelection

@@ -33,9 +33,11 @@ const PageList = ({
     isEnable,
     isPassword,
     isHeaderItem,
+    isMultipleHeaderItem,
     isCopy,
     actionWidth,
     isCompany,
+    isNoOrder,
   } = useActiveRoute()
   const fetchPath = path ?? `${apiPath}/page`
   const tableList = useTableFetch(fetchPath)
@@ -196,6 +198,24 @@ const PageList = ({
     })
   }
 
+  const setMultipleHeaderItem = (record) => {
+    const { isHeaderItem } = record
+    const status = isHeaderItem ? '取消' : '设置'
+    confirm({
+      title: `请问您确认要${status}该新闻为头部新闻吗?`,
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        await api.post(
+          `${apiPath}/headerItem?isHeaderItem=${!isHeaderItem}&id=${record.id}`
+        )
+        message.success(`${status}头部新闻成功`)
+        tableList.fetchTable()
+      },
+      onCancel() {},
+    })
+  }
+
   const actionRow = {
     title: '操作',
     key: 'action',
@@ -260,6 +280,17 @@ const PageList = ({
             </span>
           </>
         )}
+        {isMultipleHeaderItem && (
+          <>
+            <Divider type="vertical" />
+            <span
+              className="table-action"
+              onClick={() => setMultipleHeaderItem(record)}
+            >
+              {record.isHeaderItem ? '取消头部新闻' : '设为头部新闻'}
+            </span>
+          </>
+        )}
         {isCopy && (
           <>
             <Divider type="vertical" />
@@ -281,6 +312,11 @@ const PageList = ({
     setSelectedEntity()
   }
 
+  const finalColumns = [...listColumns, actionRow]
+  if (!isNoOrder) {
+    finalColumns.unshift(tableOrder)
+  }
+
   return (
     <div className={`page page-list`}>
       <div className="page-list-title">{title}列表</div>
@@ -295,7 +331,7 @@ const PageList = ({
       />
       <CustomTable
         {...tableList}
-        columns={[tableOrder, ...listColumns, actionRow]}
+        columns={finalColumns}
         rowKey="id"
         size="middle"
         showRowSelection={showRowSelection}
