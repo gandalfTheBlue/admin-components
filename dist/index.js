@@ -827,6 +827,12 @@ var FormEditor = function FormEditor(_ref) {
     form.setFieldsValue(_defineProperty({}, name, editorState.toHTML()));
   };
 
+  var handleSetFaceUrl = function handleSetFaceUrl(url) {
+    form.setFieldsValue({
+      faceUrl: url
+    });
+  };
+
   var uploadHandler = function uploadHandler(_ref2) {
     var file = _ref2.file;
     setIsUploading(file.status === 'uploading');
@@ -879,6 +885,21 @@ var FormEditor = function FormEditor(_ref) {
       className: "control-item button upload-button"
     }, !isUploading && /*#__PURE__*/React.createElement("span", null, "\u63D2\u5165\u56FE\u7247/\u97F3\u89C6\u9891"), isUploading && /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement(LoadingOutlined, null), "\u6587\u4EF6\u4E0A\u4F20\u4E2D")))
   }];
+  var imageControls = ['float-left', // 设置图片左浮动
+  'float-right', // 设置图片右浮动
+  'align-left', // 设置图片居左
+  'align-center', // 设置图片居中
+  'align-right', // 设置图片居右
+  'link', // 设置图片超链接
+  'size', // 设置图片尺寸
+  {
+    text: '封面',
+    onClick: function onClick(_, info) {
+      handleSetFaceUrl(info.url);
+      message.success('设置封面图成功, 保存后生效');
+    }
+  }, 'remove' // 删除图片
+  ];
 
   if (mode === 'list') {
     return /*#__PURE__*/React.createElement("div", {
@@ -886,7 +907,8 @@ var FormEditor = function FormEditor(_ref) {
     }, /*#__PURE__*/React.createElement("span", null, label, ": "), /*#__PURE__*/React.createElement(BraftEditor, {
       value: editorState,
       onChange: handleEditorChange,
-      controls: ['list-ul', 'list-ol']
+      controls: ['list-ul', 'list-ol'],
+      imageControls: imageControls
     }), /*#__PURE__*/React.createElement(Form.Item, {
       label: label,
       name: name,
@@ -903,7 +925,8 @@ var FormEditor = function FormEditor(_ref) {
     value: editorState,
     onChange: handleEditorChange,
     extendControls: extendControls,
-    excludeControls: ['media']
+    excludeControls: ['media'],
+    imageControls: imageControls
   }), /*#__PURE__*/React.createElement(Form.Item, {
     label: label,
     name: name,

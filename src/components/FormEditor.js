@@ -29,6 +29,12 @@ const FormEditor = ({
     })
   }
 
+  const handleSetFaceUrl = (url) => {
+    form.setFieldsValue({
+      faceUrl: url,
+    })
+  }
+
   const uploadHandler = ({ file }) => {
     setIsUploading(file.status === 'uploading')
     if (file.status === 'done') {
@@ -89,6 +95,24 @@ const FormEditor = ({
     },
   ]
 
+  const imageControls = [
+    'float-left', // 设置图片左浮动
+    'float-right', // 设置图片右浮动
+    'align-left', // 设置图片居左
+    'align-center', // 设置图片居中
+    'align-right', // 设置图片居右
+    'link', // 设置图片超链接
+    'size', // 设置图片尺寸
+    {
+      text: '封面',
+      onClick: (_, info) => {
+        handleSetFaceUrl(info.url)
+        message.success('设置封面图成功, 保存后生效')
+      },
+    },
+    'remove', // 删除图片
+  ]
+
   if (mode === 'list') {
     return (
       <div className="form-editor form-editor-list">
@@ -97,6 +121,7 @@ const FormEditor = ({
           value={editorState}
           onChange={handleEditorChange}
           controls={['list-ul', 'list-ol']}
+          imageControls={imageControls}
         />
         <Form.Item
           label={label}
@@ -115,6 +140,7 @@ const FormEditor = ({
         onChange={handleEditorChange}
         extendControls={extendControls}
         excludeControls={['media']}
+        imageControls={imageControls}
       />
       <Form.Item
         label={label}
