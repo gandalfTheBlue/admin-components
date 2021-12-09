@@ -1619,7 +1619,8 @@ var PageList = function PageList(_ref) {
       isCopy = _useActiveRoute.isCopy,
       actionWidth = _useActiveRoute.actionWidth,
       isCompany = _useActiveRoute.isCompany,
-      isNoOrder = _useActiveRoute.isNoOrder;
+      isNoOrder = _useActiveRoute.isNoOrder,
+      isResume = _useActiveRoute.isResume;
 
   var fetchPath = path !== null && path !== void 0 ? path : "".concat(apiPath, "/page");
   var tableList = useTableFetch(fetchPath);
@@ -1925,14 +1926,14 @@ var PageList = function PageList(_ref) {
     key: 'action',
     width: actionWidth,
     render: function render(_, record) {
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, !isResume && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", {
         className: "table-action",
         onClick: function onClick() {
           return handleEdit(record);
         }
       }, "\u7F16\u8F91"), /*#__PURE__*/React.createElement(Divider, {
         type: "vertical"
-      }), !isCompany && /*#__PURE__*/React.createElement("span", {
+      })), !isCompany && /*#__PURE__*/React.createElement("span", {
         className: "table-action",
         onClick: function onClick() {
           return deleteEntity(record);
@@ -1986,7 +1987,14 @@ var PageList = function PageList(_ref) {
         onClick: function onClick() {
           return copyItem(record);
         }
-      }, "\u590D\u5236")));
+      }, "\u590D\u5236")), isResume && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React.createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return window.open(record.resumeUrl, '_blank');
+        }
+      }, "\u4E0B\u8F7D")));
     }
   };
 
@@ -2010,7 +2018,7 @@ var PageList = function PageList(_ref) {
   }, /*#__PURE__*/React.createElement("div", {
     className: "page-list-title"
   }, title, "\u5217\u8868"), /*#__PURE__*/React.createElement(ListHeader, _extends({}, tableList, {
-    showAdd: !isCompany || isCompany && !tableList.dataSource.length,
+    showAdd: !isResume && !isCompany || isCompany && !tableList.dataSource.length,
     placeholder: "\u8BF7\u8F93\u5165\u67E5\u8BE2\u6761\u4EF6",
     addCallback: handleAdd,
     deleteCallback: showRowSelection ? handleBatchDelete : null,

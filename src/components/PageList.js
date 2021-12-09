@@ -38,6 +38,7 @@ const PageList = ({
     actionWidth,
     isCompany,
     isNoOrder,
+    isResume,
   } = useActiveRoute()
   const fetchPath = path ?? `${apiPath}/page`
   const tableList = useTableFetch(fetchPath)
@@ -222,10 +223,14 @@ const PageList = ({
     width: actionWidth,
     render: (_, record) => (
       <>
-        <span className="table-action" onClick={() => handleEdit(record)}>
-          编辑
-        </span>
-        <Divider type="vertical" />
+        {!isResume && (
+          <>
+            <span className="table-action" onClick={() => handleEdit(record)}>
+              编辑
+            </span>
+            <Divider type="vertical" />
+          </>
+        )}
         {!isCompany && (
           <span className="table-action" onClick={() => deleteEntity(record)}>
             删除
@@ -299,6 +304,17 @@ const PageList = ({
             </span>
           </>
         )}
+        {isResume && (
+          <>
+            <Divider type="vertical" />
+            <span
+              className="table-action"
+              onClick={() => window.open(record.resumeUrl, '_blank')}
+            >
+              下载
+            </span>
+          </>
+        )}
       </>
     ),
   }
@@ -322,7 +338,10 @@ const PageList = ({
       <div className="page-list-title">{title}列表</div>
       <ListHeader
         {...tableList}
-        showAdd={!isCompany || (isCompany && !tableList.dataSource.length)}
+        showAdd={
+          (!isResume && !isCompany) ||
+          (isCompany && !tableList.dataSource.length)
+        }
         placeholder="请输入查询条件"
         addCallback={handleAdd}
         deleteCallback={showRowSelection ? handleBatchDelete : null}
