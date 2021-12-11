@@ -817,10 +817,20 @@ var FormEditor = function FormEditor(_ref) {
       isUploading = _useState2[0],
       setIsUploading = _useState2[1];
 
-  var _useState3 = useState(BraftEditor.createEditorState(initialValue)),
+  var _useState3 = useState(false),
       _useState4 = _slicedToArray(_useState3, 2),
-      editorState = _useState4[0],
-      setEditorState = _useState4[1];
+      showModal = _useState4[0],
+      setShowModal = _useState4[1];
+
+  var _useState5 = useState(),
+      _useState6 = _slicedToArray(_useState5, 2),
+      currentVedioLink = _useState6[0],
+      setCurrentVedioLink = _useState6[1];
+
+  var _useState7 = useState(BraftEditor.createEditorState(initialValue)),
+      _useState8 = _slicedToArray(_useState7, 2),
+      editorState = _useState8[0],
+      setEditorState = _useState8[1];
 
   var handleEditorChange = function handleEditorChange(editorState) {
     setEditorState(editorState);
@@ -852,21 +862,41 @@ var FormEditor = function FormEditor(_ref) {
         type = 'AUDIO';
       }
 
-      setEditorState(ContentUtils.insertMedias(editorState, [{
-        type: type,
-        url: file.response.data.url
-      }]));
+      if (type === 'VIDEO') {
+        setCurrentVedioLink(file.response.data.url);
+        setShowModal(true);
+      } else {
+        setEditorState(ContentUtils.insertMedias(editorState, [{
+          type: type,
+          url: file.response.data.url
+        }]));
+      }
     }
   };
 
-  function _beforeUpload(file) {
+  var updateVedioHandler = function updateVedioHandler(imageUrl) {
+    setEditorState(ContentUtils.insertMedias(editorState, [{
+      type: 'VIDEO',
+      url: currentVedioLink,
+      meta: {
+        poster: imageUrl
+      }
+    }]));
+  };
+
+  var handleCloseModal = function handleCloseModal(imageUrl) {
+    updateVedioHandler(imageUrl);
+    setShowModal(false);
+  };
+
+  var _beforeUpload = function beforeUpload(file) {
     if (file.size > maxSize * 1024 * 1024) {
       message.error("\u5A92\u4F53\u6587\u4EF6\u5927\u5C0F\u4E0D\u80FD\u8D85\u8FC7".concat(maxSize, "M"));
       return Promise.reject();
     }
 
     return true;
-  }
+  };
 
   var extendControls = [{
     key: 'antd-uploader',
@@ -934,7 +964,73 @@ var FormEditor = function FormEditor(_ref) {
       visibility: 'hidden',
       width: 0
     }
+  }), /*#__PURE__*/React.createElement(VideoPosterUpload, {
+    showModal: showModal,
+    handleCloseModal: handleCloseModal
   }));
+};
+
+var VideoPosterUpload = function VideoPosterUpload(_ref3) {
+  var showModal = _ref3.showModal,
+      handleCloseModal = _ref3.handleCloseModal;
+
+  var _useState9 = useState(false),
+      _useState10 = _slicedToArray(_useState9, 2),
+      loading = _useState10[0],
+      setLoading = _useState10[1];
+
+  var _useState11 = useState(),
+      _useState12 = _slicedToArray(_useState11, 2),
+      imageUrl = _useState12[0],
+      setImageUrl = _useState12[1];
+
+  var uploadButton = /*#__PURE__*/React.createElement("div", null, loading && /*#__PURE__*/React.createElement(Button, {
+    icon: /*#__PURE__*/React.createElement(LoadingOutlined, null),
+    disabled: true
+  }, "\u4E0A\u4F20\u4E2D"), !loading && /*#__PURE__*/React.createElement(Button, {
+    icon: /*#__PURE__*/React.createElement(UploadOutlined, null)
+  }, "\u70B9\u51FB\u4E0A\u4F20"));
+
+  var handleChange = function handleChange(info) {
+    if (info.file.status === 'uploading') {
+      setLoading(true);
+      return;
+    }
+
+    if (info.file.status === 'done') {
+      setLoading(false);
+      setImageUrl(info.file.response.data.url);
+    }
+  };
+
+  var handleAction = function handleAction() {
+    handleCloseModal(imageUrl);
+    setImageUrl(null);
+  };
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, showModal && /*#__PURE__*/React.createElement(Modal, {
+    title: "\u89C6\u9891\u5C01\u9762\u56FE",
+    visible: true,
+    footer: [/*#__PURE__*/React.createElement(Button, {
+      type: "primary",
+      key: "confirm",
+      onClick: handleAction
+    }, "\u786E\u5B9A"), /*#__PURE__*/React.createElement(Button, {
+      key: "skip",
+      onClick: handleAction
+    }, "\u8DF3\u8FC7")]
+  }, /*#__PURE__*/React.createElement(Upload, {
+    accept: "image/png,image/jpg,image/gif,image/jpeg",
+    showUploadList: false,
+    action: apiBaseImg,
+    onChange: handleChange
+  }, imageUrl ? /*#__PURE__*/React.createElement("img", {
+    src: imageUrl,
+    alt: "avatar",
+    style: {
+      width: '100%'
+    }
+  }) : uploadButton)));
 };
 
 var FormEnableRadio = function FormEnableRadio(_ref) {

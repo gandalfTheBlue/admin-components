@@ -1,8 +1,8 @@
 import './FormEditor.less'
 import 'braft-editor/dist/index.css'
 
-import { LoadingOutlined } from '@ant-design/icons'
-import { Form, message, Upload } from 'antd'
+import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
+import { Button, Form, message, Modal, Upload } from 'antd'
 import BraftEditor from 'braft-editor'
 import { ContentUtils } from 'braft-utils'
 import React, { useState } from 'react'
@@ -17,6 +17,8 @@ const FormEditor = ({
   mode,
 }) => {
   const [isUploading, setIsUploading] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [currentVedioLink, setCurrentVedioLink] = useState()
 
   const [editorState, setEditorState] = useState(
     BraftEditor.createEditorState(initialValue)
@@ -49,18 +51,42 @@ const FormEditor = ({
         type = 'AUDIO'
       }
 
-      setEditorState(
-        ContentUtils.insertMedias(editorState, [
-          {
-            type,
-            url: file.response.data.url,
-          },
-        ])
-      )
+      if (type === 'VIDEO') {
+        setCurrentVedioLink(file.response.data.url)
+        setShowModal(true)
+      } else {
+        setEditorState(
+          ContentUtils.insertMedias(editorState, [
+            {
+              type,
+              url: file.response.data.url,
+            },
+          ])
+        )
+      }
     }
   }
 
-  function beforeUpload(file) {
+  const updateVedioHandler = (imageUrl) => {
+    setEditorState(
+      ContentUtils.insertMedias(editorState, [
+        {
+          type: 'VIDEO',
+          url: currentVedioLink,
+          meta: {
+            poster: imageUrl,
+          },
+        },
+      ])
+    )
+  }
+
+  const handleCloseModal = (imageUrl) => {
+    updateVedioHandler(imageUrl)
+    setShowModal(false)
+  }
+
+  const beforeUpload = (file) => {
     if (file.size > maxSize * 1024 * 1024) {
       message.error(`媒体文件大小不能超过${maxSize}M`)
       return Promise.reject()
@@ -147,8 +173,76 @@ const FormEditor = ({
         name={name}
         style={{ visibility: 'hidden', width: 0 }}
       ></Form.Item>
+      <VideoPosterUpload
+        showModal={showModal}
+        handleCloseModal={handleCloseModal}
+      />
     </div>
   )
 }
 
 export default FormEditor
+
+const VideoPosterUpload = ({ showModal, handleCloseModal }) => {
+  const [loading, setLoading] = useState(false)
+  const [imageUrl, setImageUrl] = useState()
+
+  const uploadButton = (
+    <div>
+      {loading && (
+        <Button icon={<LoadingOutlined />} disabled>
+          上传中
+        </Button>
+      )}
+      {!loading && <Button icon={<UploadOutlined />}>点击上传</Button>}
+    </div>
+  )
+
+  const handleChange = (info) => {
+    if (info.file.status === 'uploading') {
+      setLoading(true)
+      return
+    }
+    if (info.file.status === 'done') {
+      setLoading(false)
+      setImageUrl(info.file.response.data.url)
+    }
+  }
+
+  const handleAction = () => {
+    handleCloseModal(imageUrl)
+    setImageUrl(null)
+  }
+
+  return (
+    <>
+      {showModal && (
+        <Modal
+          title="视频封面图"
+          visible={true}
+          footer={[
+            <Button type="primary" key="confirm" onClick={handleAction}>
+              确定
+            </Button>,
+            <Button key="skip" onClick={handleAction}>
+              跳过
+            </Button>,
+          ]}
+        >
+          <Upload
+            accept="image/png,image/jpg,image/gif,image/jpeg"
+            showUploadList={false}
+            action={apiBaseImg}
+            onChange={handleChange}
+          >
+            {imageUrl ? (
+              <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+            ) : (
+              uploadButton
+            )}
+          </Upload>
+        </Modal>
+      )}
+    </>
+  )
+}
