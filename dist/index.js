@@ -1716,7 +1716,8 @@ var PageList = function PageList(_ref) {
       actionWidth = _useActiveRoute.actionWidth,
       isCompany = _useActiveRoute.isCompany,
       isNoOrder = _useActiveRoute.isNoOrder,
-      isResume = _useActiveRoute.isResume;
+      isResume = _useActiveRoute.isResume,
+      isHot = _useActiveRoute.isHot;
 
   var fetchPath = path !== null && path !== void 0 ? path : "".concat(apiPath, "/page");
   var tableList = useTableFetch(fetchPath);
@@ -2017,6 +2018,44 @@ var PageList = function PageList(_ref) {
     });
   };
 
+  var setHot = function setHot(record) {
+    var isHot = record.isHot;
+    var status = isHot ? '取消' : '设置为';
+    confirm$1({
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981".concat(status, "\u6700\u70ED\u5417?"),
+      okText: '确定',
+      cancelText: '取消',
+      onOk: function () {
+        var _onOk6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+          return regeneratorRuntime.wrap(function _callee6$(_context6) {
+            while (1) {
+              switch (_context6.prev = _context6.next) {
+                case 0:
+                  _context6.next = 2;
+                  return api.post("".concat(apiPath, "/hot?hot=").concat(!isHot, "&id=").concat(record.id));
+
+                case 2:
+                  message.success("".concat(status, "\u6700\u70ED\u6210\u529F"));
+                  tableList.fetchTable();
+
+                case 4:
+                case "end":
+                  return _context6.stop();
+              }
+            }
+          }, _callee6);
+        }));
+
+        function onOk() {
+          return _onOk6.apply(this, arguments);
+        }
+
+        return onOk;
+      }(),
+      onCancel: function onCancel() {}
+    });
+  };
+
   var actionRow = {
     title: '操作',
     key: 'action',
@@ -2090,7 +2129,14 @@ var PageList = function PageList(_ref) {
         onClick: function onClick() {
           return window.open(record.resumeUrl, '_blank');
         }
-      }, "\u4E0B\u8F7D")));
+      }, "\u4E0B\u8F7D")), isHot && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React.createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return setHot(record);
+        }
+      }, record.isHot ? '取消最热' : '设为最热')));
     }
   };
 

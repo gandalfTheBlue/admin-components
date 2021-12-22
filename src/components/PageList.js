@@ -39,6 +39,7 @@ const PageList = ({
     isCompany,
     isNoOrder,
     isResume,
+    isHot,
   } = useActiveRoute()
   const fetchPath = path ?? `${apiPath}/page`
   const tableList = useTableFetch(fetchPath)
@@ -217,6 +218,22 @@ const PageList = ({
     })
   }
 
+  const setHot = (record) => {
+    const { isHot } = record
+    const status = isHot ? '取消' : '设置为'
+    confirm({
+      title: `请问您确认要${status}最热吗?`,
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        await api.post(`${apiPath}/hot?hot=${!isHot}&id=${record.id}`)
+        message.success(`${status}最热成功`)
+        tableList.fetchTable()
+      },
+      onCancel() {},
+    })
+  }
+
   const actionRow = {
     title: '操作',
     key: 'action',
@@ -312,6 +329,14 @@ const PageList = ({
               onClick={() => window.open(record.resumeUrl, '_blank')}
             >
               下载
+            </span>
+          </>
+        )}
+        {isHot && (
+          <>
+            <Divider type="vertical" />
+            <span className="table-action" onClick={() => setHot(record)}>
+              {record.isHot ? '取消最热' : '设为最热'}
             </span>
           </>
         )}
