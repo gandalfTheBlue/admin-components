@@ -93,6 +93,17 @@ const PageFormDrawer = ({
     onClose()
   }
 
+  const onValuesChange = (values) => {
+    columns.forEach((column) => {
+      const { name, secondary } = column
+      if (values[name] && secondary) {
+        form.setFieldsValue({
+          [name]: values[name],
+        })
+      }
+    })
+  }
+
   const onFinish = async (values) => {
     beforeFinish && beforeFinish(values)
     if (!!entityId) {
@@ -145,7 +156,12 @@ const PageFormDrawer = ({
       key="right"
       width={drawerWidth}
     >
-      <Form {...formLayout} form={form} onFinish={onFinish}>
+      <Form
+        {...formLayout}
+        form={form}
+        onFinish={onFinish}
+        onValuesChange={onValuesChange}
+      >
         {columns.map((item, index) => {
           const { comp, disabled, hide, ...rest } = item
           rest.key = index

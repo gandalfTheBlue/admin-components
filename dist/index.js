@@ -1543,6 +1543,17 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
     onClose();
   };
 
+  var onValuesChange = function onValuesChange(values) {
+    columns.forEach(function (column) {
+      var name = column.name,
+          secondary = column.secondary;
+
+      if (values[name] && secondary) {
+        form.setFieldsValue(_defineProperty({}, name, values[name]));
+      }
+    });
+  };
+
   var onFinish = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(values) {
       return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -1623,7 +1634,8 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
     width: drawerWidth
   }, /*#__PURE__*/React.createElement(Form, _extends({}, formLayout, {
     form: form,
-    onFinish: onFinish
+    onFinish: onFinish,
+    onValuesChange: onValuesChange
   }), columns.map(function (item, index) {
     var comp = item.comp,
         disabled = item.disabled,
