@@ -19,10 +19,22 @@ const FormEditor = ({
   const [isUploading, setIsUploading] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [currentVedioLink, setCurrentVedioLink] = useState()
-
+  const [mediaItems, setMediaItems] = useState(getMedias(initialValue))
   const [editorState, setEditorState] = useState(
     BraftEditor.createEditorState(initialValue)
   )
+
+  const handleMediaItemChange = (url, type) => {
+    const isExist = mediaItems.some((mediaItem) => mediaItem.url === url)
+    if (!isExist) {
+      const newItem = {
+        id: mediaItems.length,
+        type,
+        url,
+      }
+      setMediaItems([...mediaItems, newItem])
+    }
+  }
 
   const handleEditorChange = (editorState) => {
     setEditorState(editorState)
@@ -51,15 +63,17 @@ const FormEditor = ({
         type = 'AUDIO'
       }
 
+      const { url } = file.response.data
       if (type === 'VIDEO') {
-        setCurrentVedioLink(file.response.data.url)
+        setCurrentVedioLink(url)
         setShowModal(true)
       } else {
+        handleMediaItemChange(url, type)
         setEditorState(
           ContentUtils.insertMedias(editorState, [
             {
               type,
-              url: file.response.data.url,
+              url,
             },
           ])
         )
@@ -67,14 +81,15 @@ const FormEditor = ({
     }
   }
 
-  const updateVedioHandler = (imageUrl) => {
+  const updateVedioHandler = (posterUrl) => {
+    handleMediaItemChange(posterUrl, 'VIDEO')
     setEditorState(
-      ContentUtils.insertMedias(editorState, [
+      ContentUtils.insertMedias(currentVedioLink, [
         {
           type: 'VIDEO',
           url: currentVedioLink,
           meta: {
-            poster: imageUrl,
+            poster: posterUrl,
           },
         },
       ])
@@ -165,7 +180,7 @@ const FormEditor = ({
         value={editorState}
         onChange={handleEditorChange}
         extendControls={extendControls}
-        excludeControls={['media']}
+        media={{ items: mediaItems }}
         imageControls={imageControls}
       />
       <Form.Item
@@ -245,4 +260,30 @@ const VideoPosterUpload = ({ showModal, handleCloseModal }) => {
       )}
     </>
   )
+}
+
+const getMedias = (html) => {
+  const mediaItems = []
+  let htmlObject = document.createElement('div')
+  htmlObject.innerHTML = html
+  const allImages = htmlObject.getElementsByTagName('img') || []
+  const allVideos = htmlObject.getElementsByTagName('video') || []
+
+  for (let item of allImages) {
+    mediaItems.push({
+      id: mediaItems.length,
+      type: 'IMAGE',
+      url: item.src,
+    })
+  }
+
+  for (let item of allVideos) {
+    mediaItems.push({
+      id: mediaItems.length,
+      type: 'VIDEO',
+      url: item.src,
+    })
+  }
+
+  return mediaItems
 }

@@ -355,6 +355,63 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
+function _createForOfIteratorHelper(o, allowArrayLike) {
+  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+
+  if (!it) {
+    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (it) o = it;
+      var i = 0;
+
+      var F = function () {};
+
+      return {
+        s: F,
+        n: function () {
+          if (i >= o.length) return {
+            done: true
+          };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        },
+        e: function (e) {
+          throw e;
+        },
+        f: F
+      };
+    }
+
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var normalCompletion = true,
+      didErr = false,
+      err;
+  return {
+    s: function () {
+      it = it.call(o);
+    },
+    n: function () {
+      var step = it.next();
+      normalCompletion = step.done;
+      return step;
+    },
+    e: function (e) {
+      didErr = true;
+      err = e;
+    },
+    f: function () {
+      try {
+        if (!normalCompletion && it.return != null) it.return();
+      } finally {
+        if (didErr) throw err;
+      }
+    }
+  };
+}
+
 var tableOrder = {
   title: '序号',
   key: 'index',
@@ -827,10 +884,30 @@ var FormEditor = function FormEditor(_ref) {
       currentVedioLink = _useState6[0],
       setCurrentVedioLink = _useState6[1];
 
-  var _useState7 = useState(BraftEditor.createEditorState(initialValue)),
+  var _useState7 = useState(getMedias(initialValue)),
       _useState8 = _slicedToArray(_useState7, 2),
-      editorState = _useState8[0],
-      setEditorState = _useState8[1];
+      mediaItems = _useState8[0],
+      setMediaItems = _useState8[1];
+
+  var _useState9 = useState(BraftEditor.createEditorState(initialValue)),
+      _useState10 = _slicedToArray(_useState9, 2),
+      editorState = _useState10[0],
+      setEditorState = _useState10[1];
+
+  var handleMediaItemChange = function handleMediaItemChange(url, type) {
+    var isExist = mediaItems.some(function (mediaItem) {
+      return mediaItem.url === url;
+    });
+
+    if (!isExist) {
+      var newItem = {
+        id: mediaItems.length,
+        type: type,
+        url: url
+      };
+      setMediaItems([].concat(_toConsumableArray(mediaItems), [newItem]));
+    }
+  };
 
   var handleEditorChange = function handleEditorChange(editorState) {
     setEditorState(editorState);
@@ -862,24 +939,28 @@ var FormEditor = function FormEditor(_ref) {
         type = 'AUDIO';
       }
 
+      var url = file.response.data.url;
+
       if (type === 'VIDEO') {
-        setCurrentVedioLink(file.response.data.url);
+        setCurrentVedioLink(url);
         setShowModal(true);
       } else {
+        handleMediaItemChange(url, type);
         setEditorState(ContentUtils.insertMedias(editorState, [{
           type: type,
-          url: file.response.data.url
+          url: url
         }]));
       }
     }
   };
 
-  var updateVedioHandler = function updateVedioHandler(imageUrl) {
-    setEditorState(ContentUtils.insertMedias(editorState, [{
+  var updateVedioHandler = function updateVedioHandler(posterUrl) {
+    handleMediaItemChange(posterUrl, 'VIDEO');
+    setEditorState(ContentUtils.insertMedias(currentVedioLink, [{
       type: 'VIDEO',
       url: currentVedioLink,
       meta: {
-        poster: imageUrl
+        poster: posterUrl
       }
     }]));
   };
@@ -955,7 +1036,9 @@ var FormEditor = function FormEditor(_ref) {
     value: editorState,
     onChange: handleEditorChange,
     extendControls: extendControls,
-    excludeControls: ['media'],
+    media: {
+      items: mediaItems
+    },
     imageControls: imageControls
   }), /*#__PURE__*/React.createElement(Form.Item, {
     label: label,
@@ -974,15 +1057,15 @@ var VideoPosterUpload = function VideoPosterUpload(_ref3) {
   var showModal = _ref3.showModal,
       handleCloseModal = _ref3.handleCloseModal;
 
-  var _useState9 = useState(false),
-      _useState10 = _slicedToArray(_useState9, 2),
-      loading = _useState10[0],
-      setLoading = _useState10[1];
-
-  var _useState11 = useState(),
+  var _useState11 = useState(false),
       _useState12 = _slicedToArray(_useState11, 2),
-      imageUrl = _useState12[0],
-      setImageUrl = _useState12[1];
+      loading = _useState12[0],
+      setLoading = _useState12[1];
+
+  var _useState13 = useState(),
+      _useState14 = _slicedToArray(_useState13, 2),
+      imageUrl = _useState14[0],
+      setImageUrl = _useState14[1];
 
   var uploadButton = /*#__PURE__*/React.createElement("div", null, loading && /*#__PURE__*/React.createElement(Button, {
     icon: /*#__PURE__*/React.createElement(LoadingOutlined, null),
@@ -1031,6 +1114,52 @@ var VideoPosterUpload = function VideoPosterUpload(_ref3) {
       width: '100%'
     }
   }) : uploadButton)));
+};
+
+var getMedias = function getMedias(html) {
+  var mediaItems = [];
+  var htmlObject = document.createElement('div');
+  htmlObject.innerHTML = html;
+  var allImages = htmlObject.getElementsByTagName('img') || [];
+  var allVideos = htmlObject.getElementsByTagName('video') || [];
+
+  var _iterator = _createForOfIteratorHelper(allImages),
+      _step;
+
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var item = _step.value;
+      mediaItems.push({
+        id: mediaItems.length,
+        type: 'IMAGE',
+        url: item.src
+      });
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+
+  var _iterator2 = _createForOfIteratorHelper(allVideos),
+      _step2;
+
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var _item = _step2.value;
+      mediaItems.push({
+        id: mediaItems.length,
+        type: 'VIDEO',
+        url: _item.src
+      });
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+
+  return mediaItems;
 };
 
 var FormEnableRadio = function FormEnableRadio(_ref) {
