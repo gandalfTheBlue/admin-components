@@ -955,7 +955,7 @@ var FormEditor = function FormEditor(_ref) {
   };
 
   var updateVedioHandler = function updateVedioHandler(posterUrl) {
-    handleMediaItemChange(posterUrl, 'VIDEO');
+    handleMediaItemChange(currentVedioLink, 'VIDEO');
     setEditorState(ContentUtils.insertMedias(currentVedioLink, [{
       type: 'VIDEO',
       url: currentVedioLink,

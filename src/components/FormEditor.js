@@ -82,7 +82,7 @@ const FormEditor = ({
   }
 
   const updateVedioHandler = (posterUrl) => {
-    handleMediaItemChange(posterUrl, 'VIDEO')
+    handleMediaItemChange(currentVedioLink, 'VIDEO')
     setEditorState(
       ContentUtils.insertMedias(currentVedioLink, [
         {
