@@ -894,7 +894,7 @@ var FormEditor = function FormEditor(_ref) {
       editorState = _useState10[0],
       setEditorState = _useState10[1];
 
-  var handleMediaItemChange = function handleMediaItemChange(url, type) {
+  var handleMediaItemChange = function handleMediaItemChange(url, type, poster) {
     var isExist = mediaItems.some(function (mediaItem) {
       return mediaItem.url === url;
     });
@@ -903,7 +903,8 @@ var FormEditor = function FormEditor(_ref) {
       var newItem = {
         id: mediaItems.length,
         type: type,
-        url: url
+        url: url,
+        poster: poster
       };
       setMediaItems([].concat(_toConsumableArray(mediaItems), [newItem]));
     }
@@ -955,8 +956,8 @@ var FormEditor = function FormEditor(_ref) {
   };
 
   var updateVedioHandler = function updateVedioHandler(posterUrl) {
-    handleMediaItemChange(currentVedioLink, 'VIDEO');
-    setEditorState(ContentUtils.insertMedias(currentVedioLink, [{
+    handleMediaItemChange(currentVedioLink, 'VIDEO', posterUrl);
+    setEditorState(ContentUtils.insertMedias(editorState, [{
       type: 'VIDEO',
       url: currentVedioLink,
       meta: {
@@ -979,6 +980,21 @@ var FormEditor = function FormEditor(_ref) {
     return true;
   };
 
+  var hooks = {
+    'insert-medias': function insertMedias(medias) {
+      var contents = medias.map(function (media) {
+        return {
+          type: media.type,
+          url: media.url,
+          meta: {
+            poster: media.poster
+          }
+        };
+      });
+      setEditorState(ContentUtils.insertMedias(editorState, contents));
+      return false;
+    }
+  };
   var extendControls = [{
     key: 'antd-uploader',
     type: 'component',
@@ -1039,7 +1055,8 @@ var FormEditor = function FormEditor(_ref) {
     media: {
       items: mediaItems
     },
-    imageControls: imageControls
+    imageControls: imageControls,
+    hooks: hooks
   }), /*#__PURE__*/React.createElement(Form.Item, {
     label: label,
     name: name,
@@ -1150,7 +1167,8 @@ var getMedias = function getMedias(html) {
       mediaItems.push({
         id: mediaItems.length,
         type: 'VIDEO',
-        url: _item.src
+        url: _item.src,
+        poster: _item.poster
       });
     }
   } catch (err) {

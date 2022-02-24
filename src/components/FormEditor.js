@@ -24,13 +24,14 @@ const FormEditor = ({
     BraftEditor.createEditorState(initialValue)
   )
 
-  const handleMediaItemChange = (url, type) => {
+  const handleMediaItemChange = (url, type, poster) => {
     const isExist = mediaItems.some((mediaItem) => mediaItem.url === url)
     if (!isExist) {
       const newItem = {
         id: mediaItems.length,
         type,
         url,
+        poster,
       }
       setMediaItems([...mediaItems, newItem])
     }
@@ -82,9 +83,9 @@ const FormEditor = ({
   }
 
   const updateVedioHandler = (posterUrl) => {
-    handleMediaItemChange(currentVedioLink, 'VIDEO')
+    handleMediaItemChange(currentVedioLink, 'VIDEO', posterUrl)
     setEditorState(
-      ContentUtils.insertMedias(currentVedioLink, [
+      ContentUtils.insertMedias(editorState, [
         {
           type: 'VIDEO',
           url: currentVedioLink,
@@ -107,6 +108,22 @@ const FormEditor = ({
       return Promise.reject()
     }
     return true
+  }
+
+  const hooks = {
+    'insert-medias': (medias) => {
+      const contents = medias.map((media) => {
+        return {
+          type: media.type,
+          url: media.url,
+          meta: {
+            poster: media.poster,
+          },
+        }
+      })
+      setEditorState(ContentUtils.insertMedias(editorState, contents))
+      return false
+    },
   }
 
   const extendControls = [
@@ -182,6 +199,7 @@ const FormEditor = ({
         extendControls={extendControls}
         media={{ items: mediaItems }}
         imageControls={imageControls}
+        hooks={hooks}
       />
       <Form.Item
         label={label}
@@ -282,6 +300,7 @@ const getMedias = (html) => {
       id: mediaItems.length,
       type: 'VIDEO',
       url: item.src,
+      poster: item.poster,
     })
   }
 
