@@ -1,0 +1,56 @@
+.dynamic-params {
+  .ant-form-item-control-input-content {
+    display: flex;
+    align-items: center;
+  }
+
+  input:last-of-type {
+    margin-left: 5px;
+  }
+
+  .anticon-minus-circle {
+    font-size: 20px;
+    margin-left: 5px;
+  }
+  .anticon-plus-circle {
+    font-size: 20px;
+    position: absolute;
+    right: -25px;
+  }
+}
+
+.dynamic-params-item {
+  height: 0px;
+  margin: 0;
+
+  .ant-form-item-explain-error {
+    display: none;
+  }
+}
+
+.dynamic-params-warning {
+  display: flex;
+
+  & > div:first-of-type {
+    display: block;
+    flex: 0 0 20.83333333%;
+    max-width: 20.83333333%;
+  }
+
+  & > div:last-of-type {
+    display: block;
+    flex: 0 0 66.66666667%;
+    max-width: 66.66666667%;
+    margin-top: -18px;
+    margin-bottom: 5px;
+    color: #ff4d4f;
+  }
+}
+
+.dynamic-params-duplicated {
+  & > div:last-of-type {
+    input:first-of-type {
+      border-color: #ff4d4f;
+    }
+  }
+}

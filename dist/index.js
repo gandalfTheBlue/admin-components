@@ -15,7 +15,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import useActiveRoute from 'src/hooks/useActiveRoute';
 import api from 'src/utils/api';
 import moment from 'moment';
-import { LockOutlined, LoadingOutlined, UploadOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
+import { LockOutlined, MinusCircleOutlined, PlusCircleOutlined, LoadingOutlined, UploadOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { formLayout, formItemHide } from 'src/utils/const';
 import update from 'immutability-helper';
 import { DropTarget, DragSource, DndProvider } from 'react-dnd';
@@ -856,6 +856,154 @@ var FormDate = function FormDate(_ref) {
   }, /*#__PURE__*/React.createElement(DatePicker, {
     disabledDate: disabledDate
   }));
+};
+
+__$styleInject(".dynamic-params .ant-form-item-control-input-content {\n  display: flex;\n  align-items: center;\n}\n.dynamic-params input:last-of-type {\n  margin-left: 5px;\n}\n.dynamic-params .anticon-minus-circle {\n  font-size: 20px;\n  margin-left: 5px;\n}\n.dynamic-params .anticon-plus-circle {\n  font-size: 20px;\n  position: absolute;\n  right: -25px;\n}\n.dynamic-params-item {\n  height: 0px;\n  margin: 0;\n}\n.dynamic-params-item .ant-form-item-explain-error {\n  display: none;\n}\n.dynamic-params-warning {\n  display: flex;\n}\n.dynamic-params-warning > div:first-of-type {\n  display: block;\n  flex: 0 0 20.83333333%;\n  max-width: 20.83333333%;\n}\n.dynamic-params-warning > div:last-of-type {\n  display: block;\n  flex: 0 0 66.66666667%;\n  max-width: 66.66666667%;\n  margin-top: -18px;\n  margin-bottom: 5px;\n  color: #ff4d4f;\n}\n.dynamic-params-duplicated > div:last-of-type input:first-of-type {\n  border-color: #ff4d4f;\n}\n");
+
+var FormDynamicParam = function FormDynamicParam(_ref) {
+  var form = _ref.form,
+      name = _ref.name,
+      _ref$initialValue = _ref.initialValue,
+      initialValue = _ref$initialValue === void 0 ? {} : _ref$initialValue;
+
+  var _useState = useState(initToParams(initialValue)),
+      _useState2 = _slicedToArray(_useState, 2),
+      params = _useState2[0],
+      setParams = _useState2[1];
+
+  var _useState3 = useState(params.length),
+      _useState4 = _slicedToArray(_useState3, 2),
+      maxNum = _useState4[0],
+      setMaxNum = _useState4[1];
+
+  var _useState5 = useState([]),
+      _useState6 = _slicedToArray(_useState5, 2),
+      duplicateIds = _useState6[0],
+      setDuplicateIds = _useState6[1];
+
+  useEffect(function () {
+    var obj = {};
+    params.forEach(function (param) {
+      obj[param.key] = param.value;
+    });
+    form.setFieldsValue(_defineProperty({}, name, JSON.stringify(obj)));
+  }, [form, name, params]);
+
+  var updateInput = function updateInput(id, type, value) {
+    var copyedParams = deepClone(params);
+    var param = copyedParams.find(function (param) {
+      return param.id === id;
+    });
+    param[type] = value;
+    var set = new Set();
+    var obj = {};
+    copyedParams.forEach(function (param) {
+      if (!obj[param.key]) {
+        obj[param.key] = param.id;
+      } else {
+        set.add(obj[param.key]);
+        set.add(param.id);
+      }
+    });
+    var ids = Array.from(set);
+    setDuplicateIds(ids);
+    setParams(copyedParams);
+  };
+
+  var addParam = function addParam() {
+    var param = {
+      id: maxNum + 1
+    };
+    setMaxNum(function (pre) {
+      return pre + 1;
+    });
+    setParams([].concat(_toConsumableArray(params), [param]));
+  };
+
+  var deleteParam = function deleteParam(id) {
+    var newParams = params.filter(function (param) {
+      return param.id !== id;
+    });
+
+    if (newParams.length === 0) {
+      newParams.push({
+        id: maxNum
+      });
+    }
+
+    setParams(newParams);
+  };
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Form.Item, {
+    rules: [{
+      validator: function () {
+        var _validator = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  if (!duplicateIds.length) {
+                    _context.next = 2;
+                    break;
+                  }
+
+                  return _context.abrupt("return", Promise.reject(new Error('动态参数名必须唯一')));
+
+                case 2:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }));
+
+        function validator() {
+          return _validator.apply(this, arguments);
+        }
+
+        return validator;
+      }()
+    }],
+    name: name,
+    className: "dynamic-params-item"
+  }), params.map(function (item, index) {
+    var isDuplicate = duplicateIds.indexOf(item.id) > -1;
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Form.Item, {
+      key: item.id,
+      label: "\u52A8\u6001\u53C2\u6570".concat(index + 1),
+      className: "dynamic-params ".concat(isDuplicate ? 'dynamic-params-duplicated' : '')
+    }, /*#__PURE__*/React.createElement(Input, {
+      onChange: function onChange(e) {
+        return updateInput(item.id, 'key', e.target.value);
+      },
+      value: item.key,
+      placeholder: "\u8BF7\u8F93\u5165\u53C2\u6570\u540D"
+    }), /*#__PURE__*/React.createElement(Input, {
+      onChange: function onChange(e) {
+        return updateInput(item.id, 'value', e.target.value);
+      },
+      value: item.value,
+      placeholder: "\u8BF7\u8F93\u5165\u53C2\u6570\u503C"
+    }), /*#__PURE__*/React.createElement(MinusCircleOutlined, {
+      onClick: function onClick() {
+        return deleteParam(index);
+      }
+    }), index === params.length - 1 && /*#__PURE__*/React.createElement(PlusCircleOutlined, {
+      onClick: addParam
+    })), isDuplicate && /*#__PURE__*/React.createElement("div", {
+      className: "dynamic-params-warning"
+    }, /*#__PURE__*/React.createElement("div", null), /*#__PURE__*/React.createElement("div", null, "\u53C2\u6570\u5FC5\u987B\u552F\u4E00")));
+  }));
+};
+
+var initToParams = function initToParams(init) {
+  return Object.keys(init).map(function (key, index) {
+    return {
+      id: index + 1,
+      key: key,
+      value: init[key]
+    };
+  });
 };
 
 __$styleInject(".form-editor {\n  display: flex;\n  margin: 0 50px 20px 50px;\n}\n.form-editor > span {\n  min-width: 100px;\n  text-align: right;\n  margin-right: 10px;\n}\n.form-editor .bf-container {\n  border: 1px solid #d9d9d9;\n  width: 100%;\n}\n.form-editor .ant-row {\n  width: 0;\n}\n.form-editor-list .bf-content {\n  height: 200px;\n}\n");
@@ -1831,7 +1979,8 @@ var compMap = {
   FormCascader: FormCascader,
   FormEditor: FormEditor,
   FormPublishRadio: FormPublishRadio,
-  FormFile: FormFile
+  FormFile: FormFile,
+  FormDynamicParam: FormDynamicParam
 };
 
 var getFormPath = function getFormPath(apiPath, customApiPath) {

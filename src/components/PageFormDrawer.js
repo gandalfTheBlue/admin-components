@@ -9,6 +9,7 @@ import { formLayout } from 'src/utils/const'
 
 import FormCascader from './FormCascader'
 import FormDate from './FormDate'
+import FormDynamicParam from './FormDynamicParam'
 import FormEditor from './FormEditor'
 import FormEnableRadio from './FormEnableRadio'
 import FormFile from './FormFile'
@@ -206,6 +207,7 @@ const compMap = {
   FormEditor,
   FormPublishRadio,
   FormFile,
+  FormDynamicParam,
 }
 
 const getFormPath = (apiPath, customApiPath) => {
