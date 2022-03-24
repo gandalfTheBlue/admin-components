@@ -115,15 +115,18 @@ const FormDynamicParam = ({ form, name, initialValue }) => {
 export default FormDynamicParam
 
 const initToParams = (init) => {
-  let obj = {
-    id: 0,
+  try {
+    const obj = JSON.parse(init)
+    return Object.keys(obj).map((key, index) => ({
+      id: index + 1,
+      key,
+      value: obj[key],
+    }))
+  } catch (e) {
+    return [
+      {
+        id: 0,
+      },
+    ]
   }
-  if (init && typeof JSON.parse(init) === 'object') {
-    obj = JSON.parse(init)
-  }
-  return Object.keys(obj).map((key, index) => ({
-    id: index + 1,
-    key,
-    value: init[key],
-  }))
 }

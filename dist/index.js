@@ -72,22 +72,6 @@ function _objectSpread2(target) {
   return target;
 }
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function (obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
     var info = gen[key](arg);
@@ -1012,21 +996,20 @@ var FormDynamicParam = function FormDynamicParam(_ref) {
 };
 
 var initToParams = function initToParams(init) {
-  var obj = {
-    id: 0
-  };
-
-  if (init && _typeof(JSON.parse(init)) === 'object') {
-    obj = JSON.parse(init);
+  try {
+    var obj = JSON.parse(init);
+    return Object.keys(obj).map(function (key, index) {
+      return {
+        id: index + 1,
+        key: key,
+        value: obj[key]
+      };
+    });
+  } catch (e) {
+    return [{
+      id: 0
+    }];
   }
-
-  return Object.keys(obj).map(function (key, index) {
-    return {
-      id: index + 1,
-      key: key,
-      value: init[key]
-    };
-  });
 };
 
 __$styleInject(".form-editor {\n  display: flex;\n  margin: 0 50px 20px 50px;\n}\n.form-editor > span {\n  min-width: 100px;\n  text-align: right;\n  margin-right: 10px;\n}\n.form-editor .bf-container {\n  border: 1px solid #d9d9d9;\n  width: 100%;\n}\n.form-editor .ant-row {\n  width: 0;\n}\n.form-editor-list .bf-content {\n  height: 200px;\n}\n");
