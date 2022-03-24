@@ -76,9 +76,8 @@ const FormDynamicParam = ({ form, name, initialValue }) => {
       {params.map((item, index) => {
         const isDuplicate = duplicateIds.indexOf(item.id) > -1
         return (
-          <>
+          <div key={item.id}>
             <Form.Item
-              key={item.id}
               label={`动态参数${index + 1}`}
               className={`dynamic-params ${
                 isDuplicate ? 'dynamic-params-duplicated' : ''
@@ -105,7 +104,7 @@ const FormDynamicParam = ({ form, name, initialValue }) => {
                 <div>参数必须唯一</div>
               </div>
             )}
-          </>
+          </div>
         )
       })}
     </>

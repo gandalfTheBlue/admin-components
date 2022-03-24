@@ -967,8 +967,9 @@ var FormDynamicParam = function FormDynamicParam(_ref) {
     className: "dynamic-params-item"
   }), params.map(function (item, index) {
     var isDuplicate = duplicateIds.indexOf(item.id) > -1;
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Form.Item, {
-      key: item.id,
+    return /*#__PURE__*/React.createElement("div", {
+      key: item.id
+    }, /*#__PURE__*/React.createElement(Form.Item, {
       label: "\u52A8\u6001\u53C2\u6570".concat(index + 1),
       className: "dynamic-params ".concat(isDuplicate ? 'dynamic-params-duplicated' : '')
     }, /*#__PURE__*/React.createElement(Input, {
@@ -2029,6 +2030,8 @@ var PageList = function PageList(_ref) {
       isEnable = _useActiveRoute.isEnable,
       isPassword = _useActiveRoute.isPassword,
       isHeaderItem = _useActiveRoute.isHeaderItem,
+      _useActiveRoute$heade = _useActiveRoute.headerItem,
+      headerItem = _useActiveRoute$heade === void 0 ? '新闻' : _useActiveRoute$heade,
       isMultipleHeaderItem = _useActiveRoute.isMultipleHeaderItem,
       isCopy = _useActiveRoute.isCopy,
       actionWidth = _useActiveRoute.actionWidth,
@@ -2264,7 +2267,7 @@ var PageList = function PageList(_ref) {
 
   var setHeaderItem = function setHeaderItem(record) {
     confirm$1({
-      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u8BBE\u7F6E\u8BE5\u65B0\u95FB\u4E3A\u5934\u90E8\u65B0\u95FB\u5417?",
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u8BBE\u7F6E\u8BE5".concat(headerItem, "\u4E3A\u5934\u90E8").concat(headerItem, "\u5417?"),
       okText: '确定',
       cancelText: '取消',
       onOk: function () {
@@ -2277,7 +2280,7 @@ var PageList = function PageList(_ref) {
                   return api.post("".concat(apiPath, "/headerItem?id=").concat(record.id));
 
                 case 2:
-                  message.success("\u6279\u91CF\u5934\u90E8\u65B0\u95FB\u6210\u529F");
+                  message.success("\u6279\u91CF\u5934\u90E8".concat(headerItem, "\u6210\u529F"));
                   tableList.fetchTable();
 
                 case 4:
@@ -2302,7 +2305,7 @@ var PageList = function PageList(_ref) {
     var isHeaderItem = record.isHeaderItem;
     var status = isHeaderItem ? '取消' : '设置';
     confirm$1({
-      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981".concat(status, "\u8BE5\u65B0\u95FB\u4E3A\u5934\u90E8\u65B0\u95FB\u5417?"),
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981".concat(status, "\u8BE5").concat(headerItem, "\u4E3A\u5934\u90E8").concat(headerItem, "\u5417?"),
       okText: '确定',
       cancelText: '取消',
       onOk: function () {
@@ -2315,7 +2318,7 @@ var PageList = function PageList(_ref) {
                   return api.post("".concat(apiPath, "/headerItem?isHeaderItem=").concat(!isHeaderItem, "&id=").concat(record.id));
 
                 case 2:
-                  message.success("".concat(status, "\u5934\u90E8\u65B0\u95FB\u6210\u529F"));
+                  message.success("".concat(status, "\u5934\u90E8").concat(headerItem, "\u6210\u529F"));
                   tableList.fetchTable();
 
                 case 4:
@@ -2426,14 +2429,14 @@ var PageList = function PageList(_ref) {
         onClick: function onClick() {
           return setHeaderItem(record);
         }
-      }, "\u8BBE\u4E3A\u5934\u90E8\u65B0\u95FB")), isMultipleHeaderItem && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+      }, "\u8BBE\u4E3A\u5934\u90E8", headerItem)), isMultipleHeaderItem && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
         type: "vertical"
       }), /*#__PURE__*/React.createElement("span", {
         className: "table-action",
         onClick: function onClick() {
           return setMultipleHeaderItem(record);
         }
-      }, record.isHeaderItem ? '取消头部新闻' : '设为头部新闻')), isCopy && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+      }, record.isHeaderItem ? "\u53D6\u6D88\u5934\u90E8".concat(headerItem) : "\u8BBE\u4E3A\u5934\u90E8".concat(headerItem))), isCopy && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
         type: "vertical"
       }), /*#__PURE__*/React.createElement("span", {
         className: "table-action",

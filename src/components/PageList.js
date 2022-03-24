@@ -33,6 +33,7 @@ const PageList = ({
     isEnable,
     isPassword,
     isHeaderItem,
+    headerItem = '新闻',
     isMultipleHeaderItem,
     isCopy,
     actionWidth,
@@ -188,12 +189,12 @@ const PageList = ({
 
   const setHeaderItem = (record) => {
     confirm({
-      title: `请问您确认要设置该新闻为头部新闻吗?`,
+      title: `请问您确认要设置该${headerItem}为头部${headerItem}吗?`,
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
         await api.post(`${apiPath}/headerItem?id=${record.id}`)
-        message.success(`批量头部新闻成功`)
+        message.success(`批量头部${headerItem}成功`)
         tableList.fetchTable()
       },
       onCancel() {},
@@ -204,14 +205,14 @@ const PageList = ({
     const { isHeaderItem } = record
     const status = isHeaderItem ? '取消' : '设置'
     confirm({
-      title: `请问您确认要${status}该新闻为头部新闻吗?`,
+      title: `请问您确认要${status}该${headerItem}为头部${headerItem}吗?`,
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
         await api.post(
           `${apiPath}/headerItem?isHeaderItem=${!isHeaderItem}&id=${record.id}`
         )
-        message.success(`${status}头部新闻成功`)
+        message.success(`${status}头部${headerItem}成功`)
         tableList.fetchTable()
       },
       onCancel() {},
@@ -298,7 +299,7 @@ const PageList = ({
               className="table-action"
               onClick={() => setHeaderItem(record)}
             >
-              设为头部新闻
+              设为头部{headerItem}
             </span>
           </>
         )}
@@ -309,7 +310,9 @@ const PageList = ({
               className="table-action"
               onClick={() => setMultipleHeaderItem(record)}
             >
-              {record.isHeaderItem ? '取消头部新闻' : '设为头部新闻'}
+              {record.isHeaderItem
+                ? `取消头部${headerItem}`
+                : `设为头部${headerItem}`}
             </span>
           </>
         )}
