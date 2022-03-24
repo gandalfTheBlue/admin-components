@@ -2277,7 +2277,7 @@ var PageList = function PageList(_ref) {
               switch (_context4.prev = _context4.next) {
                 case 0:
                   _context4.next = 2;
-                  return api.post("".concat(apiPath, "/headerItem?id=").concat(record.id));
+                  return api.post("".concat(apiPath, "/headerItem?id=").concat(record.id, "&isHeaderItem=true"));
 
                 case 2:
                   message.success("\u8BBE\u7F6E\u5934\u90E8".concat(headerItem, "\u6210\u529F"));

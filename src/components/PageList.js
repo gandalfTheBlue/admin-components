@@ -193,7 +193,9 @@ const PageList = ({
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
-        await api.post(`${apiPath}/headerItem?id=${record.id}`)
+        await api.post(
+          `${apiPath}/headerItem?id=${record.id}&isHeaderItem=true`
+        )
         message.success(`设置头部${headerItem}成功`)
         tableList.fetchTable()
       },
