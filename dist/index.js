@@ -2280,7 +2280,7 @@ var PageList = function PageList(_ref) {
                   return api.post("".concat(apiPath, "/headerItem?id=").concat(record.id));
 
                 case 2:
-                  message.success("\u6279\u91CF\u5934\u90E8".concat(headerItem, "\u6210\u529F"));
+                  message.success("\u8BBE\u7F6E\u5934\u90E8".concat(headerItem, "\u6210\u529F"));
                   tableList.fetchTable();
 
                 case 4:
