@@ -1959,6 +1959,10 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
       rest.initialValue = entity ? entity[item.name] : '';
     }
 
+    if (comp === 'FormDynamicParam') {
+      rest.initialValue = entity ? entity[item.name] : '';
+    }
+
     if (hide === true || hide === 'isEdit' && isEdit) {
       rest.hide = true;
     }

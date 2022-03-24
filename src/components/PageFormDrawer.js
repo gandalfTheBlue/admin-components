@@ -177,6 +177,9 @@ const PageFormDrawer = ({
           if (comp === 'FormEditor') {
             rest.initialValue = entity ? entity[item.name] : ''
           }
+          if (comp === 'FormDynamicParam') {
+            rest.initialValue = entity ? entity[item.name] : ''
+          }
           if (hide === true || (hide === 'isEdit' && isEdit)) {
             rest.hide = true
           }
