@@ -72,6 +72,22 @@ function _objectSpread2(target) {
   return target;
 }
 
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
     var info = gen[key](arg);
@@ -863,8 +879,7 @@ __$styleInject(".dynamic-params .ant-form-item-control-input-content {\n  displa
 var FormDynamicParam = function FormDynamicParam(_ref) {
   var form = _ref.form,
       name = _ref.name,
-      _ref$initialValue = _ref.initialValue,
-      initialValue = _ref$initialValue === void 0 ? {} : _ref$initialValue;
+      initialValue = _ref.initialValue;
 
   var _useState = useState(initToParams(initialValue)),
       _useState2 = _slicedToArray(_useState, 2),
@@ -997,7 +1012,15 @@ var FormDynamicParam = function FormDynamicParam(_ref) {
 };
 
 var initToParams = function initToParams(init) {
-  return Object.keys(init).map(function (key, index) {
+  var obj = {
+    id: 0
+  };
+
+  if (init && _typeof(JSON.parse(init)) === 'object') {
+    obj = JSON.parse(init);
+  }
+
+  return Object.keys(obj).map(function (key, index) {
     return {
       id: index + 1,
       key: key,

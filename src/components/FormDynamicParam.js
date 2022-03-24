@@ -5,7 +5,7 @@ import { Form, Input } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { deepClone } from 'src/utils/common'
 
-const FormDynamicParam = ({ form, name, initialValue = {} }) => {
+const FormDynamicParam = ({ form, name, initialValue }) => {
   const [params, setParams] = useState(initToParams(initialValue))
   const [maxNum, setMaxNum] = useState(params.length)
   const [duplicateIds, setDuplicateIds] = useState([])
@@ -115,7 +115,13 @@ const FormDynamicParam = ({ form, name, initialValue = {} }) => {
 export default FormDynamicParam
 
 const initToParams = (init) => {
-  return Object.keys(init).map((key, index) => ({
+  let obj = {
+    id: 0,
+  }
+  if (init && typeof JSON.parse(init) === 'object') {
+    obj = JSON.parse(init)
+  }
+  return Object.keys(obj).map((key, index) => ({
     id: index + 1,
     key,
     value: init[key],
