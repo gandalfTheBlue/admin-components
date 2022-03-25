@@ -860,9 +860,13 @@ var FormDate = function FormDate(_ref) {
 
 __$styleInject(".dynamic-params .ant-form-item-control-input-content {\n  display: flex;\n  align-items: center;\n}\n.dynamic-params input:last-of-type {\n  margin-left: 5px;\n}\n.dynamic-params .anticon-minus-circle {\n  font-size: 20px;\n  margin-left: 5px;\n}\n.dynamic-params .anticon-plus-circle {\n  font-size: 20px;\n  position: absolute;\n  right: -25px;\n}\n.dynamic-params-item {\n  height: 0px;\n  margin: 0;\n}\n.dynamic-params-item .ant-form-item-explain-error {\n  display: none;\n}\n.dynamic-params-warning {\n  display: flex;\n}\n.dynamic-params-warning > div:first-of-type {\n  display: block;\n  flex: 0 0 20.83333333%;\n  max-width: 20.83333333%;\n}\n.dynamic-params-warning > div:last-of-type {\n  display: block;\n  flex: 0 0 66.66666667%;\n  max-width: 66.66666667%;\n  margin-top: -18px;\n  margin-bottom: 5px;\n  color: #ff4d4f;\n}\n.dynamic-params-duplicated > div:last-of-type input:first-of-type {\n  border-color: #ff4d4f;\n}\n");
 
+var TextArea$1 = Input.TextArea;
+
 var FormDynamicParam = function FormDynamicParam(_ref) {
   var form = _ref.form,
       name = _ref.name,
+      _ref$type = _ref.type,
+      type = _ref$type === void 0 ? 'input' : _ref$type,
       initialValue = _ref.initialValue;
 
   var _useState = useState(initToParams(initialValue)),
@@ -978,7 +982,14 @@ var FormDynamicParam = function FormDynamicParam(_ref) {
       },
       value: item.key,
       placeholder: "\u8BF7\u8F93\u5165\u53C2\u6570\u540D"
-    }), /*#__PURE__*/React.createElement(Input, {
+    }), type === 'input' && /*#__PURE__*/React.createElement(Input, {
+      onChange: function onChange(e) {
+        return updateInput(item.id, 'value', e.target.value);
+      },
+      value: item.value,
+      placeholder: "\u8BF7\u8F93\u5165\u53C2\u6570\u503C"
+    }), type === 'textarea' && /*#__PURE__*/React.createElement(TextArea$1, {
+      rows: 2,
       onChange: function onChange(e) {
         return updateInput(item.id, 'value', e.target.value);
       },

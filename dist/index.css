@@ -10,14 +10,14 @@
   margin-top: 20px;
   margin-left: 28px;
 }
+.tree-table-header {
+  margin-left: 25px;
+}
 .page-custom.pro-table {
   width: calc(100% - 254px);
 }
 .page-custom .admin-form-title {
   margin-bottom: 20px;
-}
-.tree-table-header {
-  margin-left: 25px;
 }
 .list-header {
   display: flex;
@@ -41,28 +41,6 @@ tr.drop-over-upward td {
 }
 .change-password .ant-modal-body .ant-form-item-label {
   margin-right: 20px;
-}
-.form-editor {
-  display: flex;
-  margin: 0 50px 20px 50px;
-}
-.form-editor > span {
-  min-width: 100px;
-  text-align: right;
-  margin-right: 10px;
-}
-.form-editor .bf-container {
-  border: 1px solid #d9d9d9;
-  width: 100%;
-}
-.form-editor .ant-row {
-  width: 0;
-}
-.form-editor-list .bf-content {
-  height: 200px;
-}
-.form-input-number {
-  width: 100%;
 }
 .dynamic-params .ant-form-item-control-input-content {
   display: flex;
@@ -105,4 +83,26 @@ tr.drop-over-upward td {
 }
 .dynamic-params-duplicated > div:last-of-type input:first-of-type {
   border-color: #ff4d4f;
+}
+.form-input-number {
+  width: 100%;
+}
+.form-editor {
+  display: flex;
+  margin: 0 50px 20px 50px;
+}
+.form-editor > span {
+  min-width: 100px;
+  text-align: right;
+  margin-right: 10px;
+}
+.form-editor .bf-container {
+  border: 1px solid #d9d9d9;
+  width: 100%;
+}
+.form-editor .ant-row {
+  width: 0;
+}
+.form-editor-list .bf-content {
+  height: 200px;
 }

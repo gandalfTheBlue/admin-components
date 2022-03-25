@@ -5,7 +5,9 @@ import { Form, Input } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { deepClone } from 'src/utils/common'
 
-const FormDynamicParam = ({ form, name, initialValue }) => {
+const { TextArea } = Input
+
+const FormDynamicParam = ({ form, name, type = 'input', initialValue }) => {
   const [params, setParams] = useState(initToParams(initialValue))
   const [maxNum, setMaxNum] = useState(params.length)
   const [duplicateIds, setDuplicateIds] = useState([])
@@ -88,11 +90,25 @@ const FormDynamicParam = ({ form, name, initialValue }) => {
                 value={item.key}
                 placeholder="请输入参数名"
               />
-              <Input
-                onChange={(e) => updateInput(item.id, 'value', e.target.value)}
-                value={item.value}
-                placeholder="请输入参数值"
-              />
+              {type === 'input' && (
+                <Input
+                  onChange={(e) =>
+                    updateInput(item.id, 'value', e.target.value)
+                  }
+                  value={item.value}
+                  placeholder="请输入参数值"
+                />
+              )}
+              {type === 'textarea' && (
+                <TextArea
+                  rows={2}
+                  onChange={(e) =>
+                    updateInput(item.id, 'value', e.target.value)
+                  }
+                  value={item.value}
+                  placeholder="请输入参数值"
+                />
+              )}
               <MinusCircleOutlined onClick={() => deleteParam(index)} />
               {index === params.length - 1 && (
                 <PlusCircleOutlined onClick={addParam} />
