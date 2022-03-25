@@ -989,6 +989,7 @@ var FormDynamicParam = function FormDynamicParam(_ref) {
       value: item.value,
       placeholder: "\u8BF7\u8F93\u5165\u53C2\u6570\u503C"
     }), type === 'textarea' && /*#__PURE__*/React.createElement(TextArea$1, {
+      rows: 1,
       onChange: function onChange(e) {
         return updateInput(item.id, 'value', e.target.value);
       },
