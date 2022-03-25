@@ -1,3 +1,6 @@
+.tree-table-header {
+  margin-left: 25px;
+}
 .page-custom.pro-table {
   width: calc(100% - 254px);
 }
@@ -16,8 +19,30 @@
   margin-top: 20px;
   margin-left: 28px;
 }
-.tree-table-header {
-  margin-left: 25px;
+tr.drop-over-downward td {
+  border-bottom: 2px dashed #1890ff;
+}
+tr.drop-over-upward td {
+  border-top: 2px dashed #1890ff;
+}
+.form-editor {
+  display: flex;
+  margin: 0 50px 20px 50px;
+}
+.form-editor > span {
+  min-width: 100px;
+  text-align: right;
+  margin-right: 10px;
+}
+.form-editor .bf-container {
+  border: 1px solid #d9d9d9;
+  width: 100%;
+}
+.form-editor .ant-row {
+  width: 0;
+}
+.form-editor-list .bf-content {
+  height: 200px;
 }
 .dynamic-params .ant-form-item-control-input-content {
   display: flex;
@@ -63,34 +88,6 @@
 .dynamic-params-duplicated > div:last-of-type input:first-of-type {
   border-color: #ff4d4f;
 }
-.form-editor {
-  display: flex;
-  margin: 0 50px 20px 50px;
-}
-.form-editor > span {
-  min-width: 100px;
-  text-align: right;
-  margin-right: 10px;
-}
-.form-editor .bf-container {
-  border: 1px solid #d9d9d9;
-  width: 100%;
-}
-.form-editor .ant-row {
-  width: 0;
-}
-.form-editor-list .bf-content {
-  height: 200px;
-}
-.form-input-number {
-  width: 100%;
-}
-tr.drop-over-downward td {
-  border-bottom: 2px dashed #1890ff;
-}
-tr.drop-over-upward td {
-  border-top: 2px dashed #1890ff;
-}
 .list-header {
   display: flex;
   justify-content: space-between;
@@ -107,4 +104,7 @@ tr.drop-over-upward td {
 }
 .change-password .ant-modal-body .ant-form-item-label {
   margin-right: 20px;
+}
+.form-input-number {
+  width: 100%;
 }

@@ -101,7 +101,6 @@ const FormDynamicParam = ({ form, name, type = 'input', initialValue }) => {
               )}
               {type === 'textarea' && (
                 <TextArea
-                  rows={2}
                   onChange={(e) =>
                     updateInput(item.id, 'value', e.target.value)
                   }
