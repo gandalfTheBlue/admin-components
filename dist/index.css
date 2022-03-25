@@ -1,3 +1,9 @@
+.page-custom.pro-table {
+  width: calc(100% - 254px);
+}
+.page-custom .admin-form-title {
+  margin-bottom: 20px;
+}
 .error-boundary {
   width: calc(100% - 254px);
   height: 100%;
@@ -13,40 +19,13 @@
 .tree-table-header {
   margin-left: 25px;
 }
-.page-custom.pro-table {
-  width: calc(100% - 254px);
-}
-.page-custom .admin-form-title {
-  margin-bottom: 20px;
-}
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-.list-header-right input {
-  margin-right: 15px;
-}
-tr.drop-over-downward td {
-  border-bottom: 2px dashed #1890ff;
-}
-tr.drop-over-upward td {
-  border-top: 2px dashed #1890ff;
-}
-.change-password .ant-modal-body {
-  padding: 24px 60px;
-}
-.change-password .ant-modal-body .ant-form-item {
-  margin-bottom: 10px;
-}
-.change-password .ant-modal-body .ant-form-item-label {
-  margin-right: 20px;
-}
 .dynamic-params .ant-form-item-control-input-content {
   display: flex;
-  align-items: center;
 }
 .dynamic-params input:last-of-type {
+  margin-left: 5px;
+}
+.dynamic-params textarea {
   margin-left: 5px;
 }
 .dynamic-params .anticon-minus-circle {
@@ -84,9 +63,6 @@ tr.drop-over-upward td {
 .dynamic-params-duplicated > div:last-of-type input:first-of-type {
   border-color: #ff4d4f;
 }
-.form-input-number {
-  width: 100%;
-}
 .form-editor {
   display: flex;
   margin: 0 50px 20px 50px;
@@ -105,4 +81,30 @@ tr.drop-over-upward td {
 }
 .form-editor-list .bf-content {
   height: 200px;
+}
+.form-input-number {
+  width: 100%;
+}
+tr.drop-over-downward td {
+  border-bottom: 2px dashed #1890ff;
+}
+tr.drop-over-upward td {
+  border-top: 2px dashed #1890ff;
+}
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.list-header-right input {
+  margin-right: 15px;
+}
+.change-password .ant-modal-body {
+  padding: 24px 60px;
+}
+.change-password .ant-modal-body .ant-form-item {
+  margin-bottom: 10px;
+}
+.change-password .ant-modal-body .ant-form-item-label {
+  margin-right: 20px;
 }
