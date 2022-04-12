@@ -42,12 +42,20 @@ const FormDynamicParam = ({ form, name, type = 'input', initialValue }) => {
     setParams(copyedParams)
   }
 
-  const addParam = () => {
+  const addParam = (insertIndex) => {
     const param = {
       id: maxNum + 1,
     }
+    const newParams = []
+    params.forEach((item, index) => {
+      newParams.push(item)
+      if (insertIndex === index) {
+        newParams.push(param)
+      }
+    })
+
     setMaxNum((pre) => pre + 1)
-    setParams([...params, param])
+    setParams(newParams)
   }
 
   const deleteParam = (id) => {
@@ -109,10 +117,8 @@ const FormDynamicParam = ({ form, name, type = 'input', initialValue }) => {
                   placeholder="请输入参数值"
                 />
               )}
-              <MinusCircleOutlined onClick={() => deleteParam(index)} />
-              {index === params.length - 1 && (
-                <PlusCircleOutlined onClick={addParam} />
-              )}
+              <MinusCircleOutlined onClick={() => deleteParam(item.id)} />
+              <PlusCircleOutlined onClick={() => addParam(index)} />
             </Form.Item>
             {isDuplicate && (
               <div className="dynamic-params-warning">

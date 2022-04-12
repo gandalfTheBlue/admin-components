@@ -913,14 +913,22 @@ var FormDynamicParam = function FormDynamicParam(_ref) {
     setParams(copyedParams);
   };
 
-  var addParam = function addParam() {
+  var addParam = function addParam(insertIndex) {
     var param = {
       id: maxNum + 1
     };
+    var newParams = [];
+    params.forEach(function (item, index) {
+      newParams.push(item);
+
+      if (insertIndex === index) {
+        newParams.push(param);
+      }
+    });
     setMaxNum(function (pre) {
       return pre + 1;
     });
-    setParams([].concat(_toConsumableArray(params), [param]));
+    setParams(newParams);
   };
 
   var deleteParam = function deleteParam(id) {
@@ -997,10 +1005,12 @@ var FormDynamicParam = function FormDynamicParam(_ref) {
       placeholder: "\u8BF7\u8F93\u5165\u53C2\u6570\u503C"
     }), /*#__PURE__*/React.createElement(MinusCircleOutlined, {
       onClick: function onClick() {
-        return deleteParam(index);
+        return deleteParam(item.id);
       }
-    }), index === params.length - 1 && /*#__PURE__*/React.createElement(PlusCircleOutlined, {
-      onClick: addParam
+    }), /*#__PURE__*/React.createElement(PlusCircleOutlined, {
+      onClick: function onClick() {
+        return addParam(index);
+      }
     })), isDuplicate && /*#__PURE__*/React.createElement("div", {
       className: "dynamic-params-warning"
     }, /*#__PURE__*/React.createElement("div", null), /*#__PURE__*/React.createElement("div", null, "\u53C2\u6570\u5FC5\u987B\u552F\u4E00")));
