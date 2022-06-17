@@ -12,6 +12,7 @@
     "react-scripts": "3.4.3"
   },
   "scripts": {
+    "push": "git add . && git commit -am 'upate' && git push",
     "build": "rollup -c",
     "build-watch": "rollup -c -w",
     "start-playground": "cd playground && npm run start",
