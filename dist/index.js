@@ -1018,8 +1018,18 @@ var FormDynamicParam = function FormDynamicParam(_ref) {
 };
 
 var initToParams = function initToParams(init) {
+  var defaultParms = [{
+    id: 0
+  }];
+
   try {
     var obj = JSON.parse(init);
+    var keys = Object.keys(obj);
+
+    if (!keys.length) {
+      return defaultParms;
+    }
+
     return Object.keys(obj).map(function (key, index) {
       return {
         id: index + 1,
@@ -1028,9 +1038,7 @@ var initToParams = function initToParams(init) {
       };
     });
   } catch (e) {
-    return [{
-      id: 0
-    }];
+    return defaultParms;
   }
 };
 
