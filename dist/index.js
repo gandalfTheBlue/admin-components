@@ -15,7 +15,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import useActiveRoute from 'src/hooks/useActiveRoute';
 import api from 'src/utils/api';
 import moment from 'moment';
-import { LockOutlined, MinusCircleOutlined, PlusCircleOutlined, LoadingOutlined, UploadOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
+import { LockOutlined, LoadingOutlined, PlusOutlined, MinusCircleOutlined, PlusCircleOutlined, UploadOutlined, DownOutlined } from '@ant-design/icons';
 import { formLayout, formItemHide } from 'src/utils/const';
 import update from 'immutability-helper';
 import { DropTarget, DragSource, DndProvider } from 'react-dnd';
@@ -23,12 +23,12 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import useTableFetch$1 from 'src/hooks/useTableFetch';
 import usePageForm from 'src/hooks/usePageForm';
 import { deepClone } from 'src/utils/common';
+import 'antd/es/modal/style';
+import 'antd/es/slider/style';
+import { apiBaseImg, apiBaseFile } from 'src/config';
 import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
 import { ContentUtils } from 'braft-utils';
-import { apiBaseImg, apiBaseFile } from 'src/config';
-import 'antd/es/modal/style';
-import 'antd/es/slider/style';
 import { withRouter } from 'react-router';
 import errorPage from 'src/images/error-page.svg';
 import { EditableProTable } from '@ant-design/pro-table';
@@ -858,6 +858,226 @@ var FormDate = function FormDate(_ref) {
   }));
 };
 
+__$styleInject(".dynamic-image .ant-form-item-control-input-content {\n  display: flex;\n}\n.dynamic-image .avatar-uploader {\n  width: 105px !important;\n}\n.dynamic-image .anticon-minus-circle {\n  font-size: 20px;\n  margin-left: 5px;\n  margin-right: 5px;\n}\n.dynamic-image .anticon-plus-circle {\n  font-size: 20px;\n  right: -25px;\n}\n.dynamic-image-item {\n  height: 0px;\n  margin: 0;\n}\n.dynamic-image-item .ant-form-item-explain-error {\n  display: none;\n}\n");
+
+function getBase64(img, callback) {
+  var reader = new FileReader();
+  reader.addEventListener('load', function () {
+    return callback(reader.result);
+  });
+  reader.readAsDataURL(img);
+}
+
+function _beforeUpload(file, callback) {
+  var isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+
+  if (!isJpgOrPng) {
+    callback({
+      valid: false,
+      message: '请上传JPG或PNG格式的照片'
+    });
+    return false;
+  }
+
+  return true;
+}
+
+var ImageUpload = /*#__PURE__*/function (_React$Component) {
+  _inherits(ImageUpload, _React$Component);
+
+  var _super = _createSuper(ImageUpload);
+
+  function ImageUpload() {
+    var _this;
+
+    _classCallCheck(this, ImageUpload);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "state", {
+      loading: false,
+      imageUrl: _this.props.imageUrl
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "handleChange", function (info) {
+      if (info.file.status === 'uploading') {
+        _this.setState({
+          loading: true
+        });
+
+        return;
+      }
+
+      if (info.file.status === 'done') {
+        getBase64(info.file.originFileObj, function (imageUrl) {
+          _this.props.callback(info.file.response.data.url);
+
+          _this.setState({
+            imageUrl: imageUrl,
+            loading: false
+          });
+        });
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getUpload", function (imageUrl, uploadButton) {
+      return /*#__PURE__*/React.createElement(Upload, {
+        disabled: _this.props.disabled,
+        name: "file",
+        listType: "picture-card",
+        className: "avatar-uploader",
+        showUploadList: false,
+        action: apiBaseImg,
+        beforeUpload: function beforeUpload(file) {
+          return _beforeUpload(file, _this.props.callback);
+        },
+        onChange: _this.handleChange
+      }, imageUrl ? /*#__PURE__*/React.createElement("img", {
+        src: imageUrl,
+        alt: "\u56FE\u7247",
+        style: {
+          width: '100%'
+        }
+      }) : uploadButton);
+    });
+
+    return _this;
+  }
+
+  _createClass(ImageUpload, [{
+    key: "UNSAFE_componentWillReceiveProps",
+    value: function UNSAFE_componentWillReceiveProps(nextProps) {
+      this.setState(_objectSpread2(_objectSpread2({}, this.state), {}, {
+        imageUrl: nextProps.imageUrl
+      }));
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var uploadButton = /*#__PURE__*/React.createElement("div", null, this.state.loading ? /*#__PURE__*/React.createElement(LoadingOutlined, null) : /*#__PURE__*/React.createElement(PlusOutlined, null), /*#__PURE__*/React.createElement("div", {
+        className: "ant-upload-text"
+      }, "\u7167\u7247"));
+      var imageUrl = this.state.imageUrl;
+      return this.getUpload(imageUrl, uploadButton);
+    }
+  }]);
+
+  return ImageUpload;
+}(React.Component);
+
+var FormDynamicImage = function FormDynamicImage(_ref) {
+  var form = _ref.form,
+      name = _ref.name,
+      initialValue = _ref.initialValue,
+      _ref$title = _ref.title,
+      title = _ref$title === void 0 ? '图片' : _ref$title;
+
+  var _useState = useState(initToIamges(initialValue)),
+      _useState2 = _slicedToArray(_useState, 2),
+      images = _useState2[0],
+      setImages = _useState2[1];
+
+  var _useState3 = useState(images.length),
+      _useState4 = _slicedToArray(_useState3, 2),
+      maxNum = _useState4[0],
+      setMaxNum = _useState4[1];
+
+  useEffect(function () {
+    form.setFieldsValue(_defineProperty({}, name, images.filter(function (image) {
+      return !image.url;
+    }).map(function (image) {
+      return image.url;
+    }).join(',')));
+  }, [form, name, images]);
+
+  var handleImageChange = function handleImageChange(id) {
+    return function (url) {
+      var copyedImages = deepClone(images);
+      var image = copyedImages.find(function (param) {
+        return param.id === id;
+      });
+      image.url = url;
+      setImages(copyedImages);
+    };
+  };
+
+  var addImage = function addImage(insertIndex) {
+    var iamge = {
+      id: maxNum + 1
+    };
+    var newImages = [];
+    images.forEach(function (item, index) {
+      newImages.push(item);
+
+      if (insertIndex === index) {
+        newImages.push(iamge);
+      }
+    });
+    setMaxNum(function (pre) {
+      return pre + 1;
+    });
+    setImages(newImages);
+  };
+
+  var deleteImage = function deleteImage(id) {
+    var newImages = images.filter(function (param) {
+      return param.id !== id;
+    });
+
+    if (newImages.length === 0) {
+      newImages.push({
+        id: maxNum
+      });
+    }
+
+    setImages(newImages);
+  };
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Form.Item, {
+    name: name,
+    className: "dynamic-image-item"
+  }), images.map(function (item, index) {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Form.Item, {
+      className: "dynamic-image",
+      key: item.id,
+      label: "".concat(title).concat(index + 1)
+    }, /*#__PURE__*/React.createElement(ImageUpload, {
+      callback: handleImageChange(item.id),
+      imageUrl: item.url
+    }), /*#__PURE__*/React.createElement(MinusCircleOutlined, {
+      onClick: function onClick() {
+        return deleteImage(item.id);
+      }
+    }), /*#__PURE__*/React.createElement(PlusCircleOutlined, {
+      onClick: function onClick() {
+        return addImage(index);
+      }
+    })));
+  }));
+};
+
+var initToIamges = function initToIamges(imageUrls) {
+  var defaultImages = [{
+    id: 0
+  }];
+  var urls = imageUrls === null || imageUrls === void 0 ? void 0 : imageUrls.split(',');
+
+  if (!urls || !urls.length) {
+    return defaultImages;
+  }
+
+  return urls.map(function (url, index) {
+    return {
+      id: index + 1,
+      url: url
+    };
+  });
+};
+
 __$styleInject(".dynamic-params .ant-form-item-control-input-content {\n  display: flex;\n}\n.dynamic-params input:last-of-type {\n  margin-left: 5px;\n}\n.dynamic-params textarea {\n  margin-left: 5px;\n}\n.dynamic-params .anticon-minus-circle {\n  font-size: 20px;\n  margin-left: 5px;\n}\n.dynamic-params .anticon-plus-circle {\n  font-size: 20px;\n  position: absolute;\n  right: -25px;\n}\n.dynamic-params-item {\n  height: 0px;\n  margin: 0;\n}\n.dynamic-params-item .ant-form-item-explain-error {\n  display: none;\n}\n.dynamic-params-warning {\n  display: flex;\n}\n.dynamic-params-warning > div:first-of-type {\n  display: block;\n  flex: 0 0 20.83333333%;\n  max-width: 20.83333333%;\n}\n.dynamic-params-warning > div:last-of-type {\n  display: block;\n  flex: 0 0 66.66666667%;\n  max-width: 66.66666667%;\n  margin-top: -18px;\n  margin-bottom: 5px;\n  color: #ff4d4f;\n}\n.dynamic-params-duplicated > div:last-of-type input:first-of-type {\n  border-color: #ff4d4f;\n}\n");
 
 var TextArea$1 = Input.TextArea;
@@ -1470,115 +1690,6 @@ var FormFile = function FormFile(_ref) {
   }));
 };
 
-function getBase64(img, callback) {
-  var reader = new FileReader();
-  reader.addEventListener('load', function () {
-    return callback(reader.result);
-  });
-  reader.readAsDataURL(img);
-}
-
-function _beforeUpload(file, callback) {
-  var isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-
-  if (!isJpgOrPng) {
-    callback({
-      valid: false,
-      message: '请上传JPG或PNG格式的照片'
-    });
-    return false;
-  }
-
-  return true;
-}
-
-var ImageUpload = /*#__PURE__*/function (_React$Component) {
-  _inherits(ImageUpload, _React$Component);
-
-  var _super = _createSuper(ImageUpload);
-
-  function ImageUpload() {
-    var _this;
-
-    _classCallCheck(this, ImageUpload);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty(_assertThisInitialized(_this), "state", {
-      loading: false,
-      imageUrl: _this.props.imageUrl
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "handleChange", function (info) {
-      if (info.file.status === 'uploading') {
-        _this.setState({
-          loading: true
-        });
-
-        return;
-      }
-
-      if (info.file.status === 'done') {
-        getBase64(info.file.originFileObj, function (imageUrl) {
-          _this.props.callback(info.file.response.data.url);
-
-          _this.setState({
-            imageUrl: imageUrl,
-            loading: false
-          });
-        });
-      }
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "getUpload", function (imageUrl, uploadButton) {
-      return /*#__PURE__*/React.createElement(Upload, {
-        disabled: _this.props.disabled,
-        name: "file",
-        listType: "picture-card",
-        className: "avatar-uploader",
-        showUploadList: false,
-        action: apiBaseImg,
-        beforeUpload: function beforeUpload(file) {
-          return _beforeUpload(file, _this.props.callback);
-        },
-        onChange: _this.handleChange
-      }, imageUrl ? /*#__PURE__*/React.createElement("img", {
-        src: imageUrl,
-        alt: "\u56FE\u7247",
-        style: {
-          width: '100%'
-        }
-      }) : uploadButton);
-    });
-
-    return _this;
-  }
-
-  _createClass(ImageUpload, [{
-    key: "UNSAFE_componentWillReceiveProps",
-    value: function UNSAFE_componentWillReceiveProps(nextProps) {
-      this.setState(_objectSpread2(_objectSpread2({}, this.state), {}, {
-        imageUrl: nextProps.imageUrl
-      }));
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var uploadButton = /*#__PURE__*/React.createElement("div", null, this.state.loading ? /*#__PURE__*/React.createElement(LoadingOutlined, null) : /*#__PURE__*/React.createElement(PlusOutlined, null), /*#__PURE__*/React.createElement("div", {
-        className: "ant-upload-text"
-      }, "\u7167\u7247"));
-      var imageUrl = this.state.imageUrl;
-      return this.getUpload(imageUrl, uploadButton);
-    }
-  }]);
-
-  return ImageUpload;
-}(React.Component);
-
 var FormImage = function FormImage(_ref) {
   var form = _ref.form,
       label = _ref.label,
@@ -2020,7 +2131,8 @@ var compMap = {
   FormEditor: FormEditor,
   FormPublishRadio: FormPublishRadio,
   FormFile: FormFile,
-  FormDynamicParam: FormDynamicParam
+  FormDynamicParam: FormDynamicParam,
+  FormDynamicImage: FormDynamicImage
 };
 
 var getFormPath = function getFormPath(apiPath, customApiPath) {
