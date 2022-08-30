@@ -19,6 +19,12 @@
 .page-custom .admin-form-title {
   margin-bottom: 20px;
 }
+tr.drop-over-downward td {
+  border-bottom: 2px dashed #1890ff;
+}
+tr.drop-over-upward td {
+  border-top: 2px dashed #1890ff;
+}
 .list-header {
   display: flex;
   justify-content: space-between;
@@ -35,34 +41,6 @@
 }
 .change-password .ant-modal-body .ant-form-item-label {
   margin-right: 20px;
-}
-tr.drop-over-downward td {
-  border-bottom: 2px dashed #1890ff;
-}
-tr.drop-over-upward td {
-  border-top: 2px dashed #1890ff;
-}
-.dynamic-image .ant-form-item-control-input-content {
-  display: flex;
-}
-.dynamic-image .avatar-uploader {
-  width: 105px !important;
-}
-.dynamic-image .anticon-minus-circle {
-  font-size: 20px;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-.dynamic-image .anticon-plus-circle {
-  font-size: 20px;
-  right: -25px;
-}
-.dynamic-image-item {
-  height: 0px;
-  margin: 0;
-}
-.dynamic-image-item .ant-form-item-explain-error {
-  display: none;
 }
 .dynamic-params .ant-form-item-control-input-content {
   display: flex;
@@ -129,4 +107,26 @@ tr.drop-over-upward td {
 }
 .form-input-number {
   width: 100%;
+}
+.dynamic-image .ant-form-item-control-input-content {
+  display: flex;
+}
+.dynamic-image .avatar-uploader {
+  width: 105px !important;
+}
+.dynamic-image .anticon-minus-circle {
+  font-size: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.dynamic-image .anticon-plus-circle {
+  font-size: 20px;
+  right: -25px;
+}
+.dynamic-image-item {
+  height: 0px;
+  margin: 0;
+}
+.dynamic-image-item .ant-form-item-explain-error {
+  display: none;
 }

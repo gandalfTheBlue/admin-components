@@ -41,6 +41,7 @@ const PageList = ({
     isNoOrder,
     isResume,
     isHot,
+    isSetTop,
   } = useActiveRoute()
   const fetchPath = path ?? `${apiPath}/page`
   const tableList = useTableFetch(fetchPath)
@@ -237,6 +238,20 @@ const PageList = ({
     })
   }
 
+  const setTopItem = (record) => {
+    confirm({
+      title: `请问您确认要置顶该${title}吗?`,
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        await api.post(`${apiPath}/setAsTopItem?id=${record.id}`)
+        message.success(`置顶${title}成功`)
+        tableList.fetchTable()
+      },
+      onCancel() {},
+    })
+  }
+
   const actionRow = {
     title: '操作',
     key: 'action',
@@ -302,6 +317,14 @@ const PageList = ({
               onClick={() => setHeaderItem(record)}
             >
               设为头部{headerItem}
+            </span>
+          </>
+        )}
+        {isSetTop && (
+          <>
+            <Divider type="vertical" />
+            <span className="table-action" onClick={() => setTopItem(record)}>
+              置顶
             </span>
           </>
         )}

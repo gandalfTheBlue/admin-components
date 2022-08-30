@@ -57,20 +57,18 @@ const FormDynamicImage = ({ form, name, initialValue, title = '图片' }) => {
       <Form.Item name={name} className="dynamic-image-item"></Form.Item>
       {images.map((item, index) => {
         return (
-          <>
-            <Form.Item
-              className="dynamic-image"
-              key={item.id}
-              label={`${title}${index + 1}`}
-            >
-              <ImageUpload
-                callback={handleImageChange(item.id)}
-                imageUrl={item.url}
-              />
-              <MinusCircleOutlined onClick={() => deleteImage(item.id)} />
-              <PlusCircleOutlined onClick={() => addImage(index)} />
-            </Form.Item>
-          </>
+          <Form.Item
+            className="dynamic-image"
+            key={item.id}
+            label={`${title}${index + 1}`}
+          >
+            <ImageUpload
+              callback={handleImageChange(item.id)}
+              imageUrl={item.url}
+            />
+            <MinusCircleOutlined onClick={() => deleteImage(item.id)} />
+            <PlusCircleOutlined onClick={() => addImage(index)} />
+          </Form.Item>
         )
       })}
     </>

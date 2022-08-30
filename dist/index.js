@@ -1041,7 +1041,7 @@ var FormDynamicImage = function FormDynamicImage(_ref) {
     name: name,
     className: "dynamic-image-item"
   }), images.map(function (item, index) {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Form.Item, {
+    return /*#__PURE__*/React.createElement(Form.Item, {
       className: "dynamic-image",
       key: item.id,
       label: "".concat(title).concat(index + 1)
@@ -1056,7 +1056,7 @@ var FormDynamicImage = function FormDynamicImage(_ref) {
       onClick: function onClick() {
         return addImage(index);
       }
-    })));
+    }));
   }));
 };
 
@@ -2179,7 +2179,8 @@ var PageList = function PageList(_ref) {
       isCompany = _useActiveRoute.isCompany,
       isNoOrder = _useActiveRoute.isNoOrder,
       isResume = _useActiveRoute.isResume,
-      isHot = _useActiveRoute.isHot;
+      isHot = _useActiveRoute.isHot,
+      isSetTop = _useActiveRoute.isSetTop;
 
   var fetchPath = path !== null && path !== void 0 ? path : "".concat(apiPath, "/page");
   var tableList = useTableFetch(fetchPath);
@@ -2518,6 +2519,42 @@ var PageList = function PageList(_ref) {
     });
   };
 
+  var setTopItem = function setTopItem(record) {
+    confirm$1({
+      title: "\u8BF7\u95EE\u60A8\u786E\u8BA4\u8981\u7F6E\u9876\u8BE5".concat(title, "\u5417?"),
+      okText: '确定',
+      cancelText: '取消',
+      onOk: function () {
+        var _onOk7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+          return regeneratorRuntime.wrap(function _callee7$(_context7) {
+            while (1) {
+              switch (_context7.prev = _context7.next) {
+                case 0:
+                  _context7.next = 2;
+                  return api.post("".concat(apiPath, "/setAsTopItem?id=").concat(record.id));
+
+                case 2:
+                  message.success("\u7F6E\u9876".concat(title, "\u6210\u529F"));
+                  tableList.fetchTable();
+
+                case 4:
+                case "end":
+                  return _context7.stop();
+              }
+            }
+          }, _callee7);
+        }));
+
+        function onOk() {
+          return _onOk7.apply(this, arguments);
+        }
+
+        return onOk;
+      }(),
+      onCancel: function onCancel() {}
+    });
+  };
+
   var actionRow = {
     title: '操作',
     key: 'action',
@@ -2570,7 +2607,14 @@ var PageList = function PageList(_ref) {
         onClick: function onClick() {
           return setHeaderItem(record);
         }
-      }, "\u8BBE\u4E3A\u5934\u90E8", headerItem)), isMultipleHeaderItem && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+      }, "\u8BBE\u4E3A\u5934\u90E8", headerItem)), isSetTop && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+        type: "vertical"
+      }), /*#__PURE__*/React.createElement("span", {
+        className: "table-action",
+        onClick: function onClick() {
+          return setTopItem(record);
+        }
+      }, "\u7F6E\u9876")), isMultipleHeaderItem && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
         type: "vertical"
       }), /*#__PURE__*/React.createElement("span", {
         className: "table-action",
