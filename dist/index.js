@@ -988,7 +988,7 @@ var FormDynamicImage = function FormDynamicImage(_ref) {
 
   useEffect(function () {
     form.setFieldsValue(_defineProperty({}, name, images.filter(function (image) {
-      return !image.url;
+      return image.url;
     }).map(function (image) {
       return image.url;
     }).join(',')));
@@ -2101,6 +2101,10 @@ var PageFormDrawer = function PageFormDrawer(_ref) {
     }
 
     if (comp === 'FormDynamicParam') {
+      rest.initialValue = entity ? entity[item.name] : '';
+    }
+
+    if (comp === 'FormDynamicImage') {
       rest.initialValue = entity ? entity[item.name] : '';
     }
 

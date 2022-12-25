@@ -13,7 +13,7 @@ const FormDynamicImage = ({ form, name, initialValue, title = '图片' }) => {
   useEffect(() => {
     form.setFieldsValue({
       [name]: images
-        .filter((image) => !image.url)
+        .filter((image) => image.url)
         .map((image) => image.url)
         .join(','),
     })
