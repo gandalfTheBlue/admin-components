@@ -10,6 +10,7 @@ const ListHeader = ({
   showAdd,
   addCallback,
   deleteCallback,
+  downloadCallback,
   isBatchPublish,
   handleBatchPublish,
 }) => {
@@ -30,6 +31,10 @@ const ListHeader = ({
 
   const handleDelete = () => {
     deleteCallback && deleteCallback()
+  }
+
+  const handleDownload = () => {
+    downloadCallback && downloadCallback()
   }
 
   return (
@@ -70,6 +75,17 @@ const ListHeader = ({
             }}
           >
             批量删除
+          </Button>
+        )}
+        {downloadCallback && (
+          <Button
+            onClick={handleDownload}
+            style={{
+              visibility: downloadCallback ? 'visible' : 'hidden',
+              marginLeft: 10,
+            }}
+          >
+            批量下载
           </Button>
         )}
       </div>

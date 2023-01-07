@@ -1,5 +1,6 @@
 import { Divider, message, Modal } from 'antd'
 import React, { useState } from 'react'
+import * as XLSX from 'xlsx'
 import useActiveRoute from 'src/hooks/useActiveRoute'
 import api from 'src/utils/api'
 
@@ -8,6 +9,7 @@ import ChangePassword from './ChangePassword'
 import CustomTable from './CustomTable'
 import ListHeader from './ListHeader'
 import PageFormDrawer from './PageFormDrawer'
+import { formatTime, timeFormat } from '../utils/timeUtil'
 
 const { confirm } = Modal
 
@@ -42,6 +44,8 @@ const PageList = ({
     isResume,
     isHot,
     isSetTop,
+    isReadonly,
+    isBatchDownload,
   } = useActiveRoute()
   const fetchPath = path ?? `${apiPath}/page`
   const tableList = useTableFetch(fetchPath)
@@ -161,6 +165,35 @@ const PageList = ({
       },
       onCancel() {},
     })
+  }
+
+  const handleBatchDownload = () => {
+    const { selectedRowKeys } = tableList.rowSelection
+    if (!selectedRowKeys.length) {
+      message.warn(`请先选择要下载的${title}`)
+      return
+    }
+    const data = tableList.dataSource
+      .filter((item) => selectedRowKeys.includes(item.id))
+      .map((item) => {
+        const newItem = {}
+        columns.forEach((column) => {
+          if (item[column.dataIndex]) {
+            newItem[column.title] = item[column.dataIndex]
+            if (column.isTime) {
+              newItem[column.title] = formatTime(
+                item[column.dataIndex],
+                timeFormat
+              )
+            }
+          }
+        })
+        return newItem
+      })
+    const worksheet = XLSX.utils.json_to_sheet(data)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
+    XLSX.writeFile(workbook, 'DataSheet.xlsx')
   }
 
   const handleBatchPublish = (isPublish) => {
@@ -381,7 +414,10 @@ const PageList = ({
     setSelectedEntity()
   }
 
-  const finalColumns = [...listColumns, actionRow]
+  const finalColumns = [...listColumns]
+  if (!isReadonly) {
+    finalColumns.push(actionRow)
+  }
   if (!isNoOrder) {
     finalColumns.unshift(tableOrder)
   }
@@ -392,12 +428,13 @@ const PageList = ({
       <ListHeader
         {...tableList}
         showAdd={
-          (!isResume && !isCompany) ||
+          (!isResume && !isCompany && !isReadonly) ||
           (isCompany && !tableList.dataSource.length)
         }
         placeholder="请输入查询条件"
         addCallback={handleAdd}
         deleteCallback={showRowSelection ? handleBatchDelete : null}
+        downloadCallback={isBatchDownload ? handleBatchDownload : null}
         isBatchPublish={isBatchPublish}
         handleBatchPublish={handleBatchPublish}
       />
@@ -406,7 +443,7 @@ const PageList = ({
         columns={finalColumns}
         rowKey="id"
         size="middle"
-        showRowSelection={showRowSelection}
+        showRowSelection={showRowSelection || isBatchDownload}
       />
       {selectedEntity && (
         <PageFormDrawer

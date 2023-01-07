@@ -12,6 +12,7 @@ function __$styleInject(css) {
 
 import { Form, Modal, Input, message, Table, Button, Cascader, DatePicker, Upload, Radio, InputNumber, Select, Drawer, Divider, Dropdown, Menu } from 'antd';
 import React, { useState, useEffect, useCallback } from 'react';
+import * as XLSX from 'xlsx';
 import useActiveRoute from 'src/hooks/useActiveRoute';
 import api from 'src/utils/api';
 import moment from 'moment';
@@ -70,6 +71,22 @@ function _objectSpread2(target) {
   }
 
   return target;
+}
+
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
 }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -412,6 +429,29 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
   };
 }
 
+var dateFormat = 'YYYY-MM-DD';
+var timeFormat = 'YYYY-MM-DD HH:mm:ss';
+/**
+ * @param {*} value long值型的时间值
+ * @format {*} format 时间格式
+ */
+
+var formatTime = function formatTime(value) {
+  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : dateFormat;
+
+  if (['string', 'number'].includes(_typeof(value))) {
+    return moment(value).format(format);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(function (item) {
+      return moment(item).format(format);
+    });
+  }
+
+  return [];
+};
+
 var tableOrder = {
   title: '序号',
   key: 'index',
@@ -746,6 +786,7 @@ var ListHeader = function ListHeader(_ref) {
       showAdd = _ref.showAdd,
       addCallback = _ref.addCallback,
       deleteCallback = _ref.deleteCallback,
+      downloadCallback = _ref.downloadCallback,
       isBatchPublish = _ref.isBatchPublish,
       handleBatchPublish = _ref.handleBatchPublish;
 
@@ -775,6 +816,10 @@ var ListHeader = function ListHeader(_ref) {
     deleteCallback && deleteCallback();
   };
 
+  var handleDownload = function handleDownload() {
+    downloadCallback && downloadCallback();
+  };
+
   return /*#__PURE__*/React.createElement("div", {
     className: "list-header"
   }, /*#__PURE__*/React.createElement("div", null, showAdd && /*#__PURE__*/React.createElement(Button, {
@@ -801,7 +846,13 @@ var ListHeader = function ListHeader(_ref) {
       visibility: deleteCallback ? 'visible' : 'hidden',
       marginLeft: 10
     }
-  }, "\u6279\u91CF\u5220\u9664")), /*#__PURE__*/React.createElement("div", {
+  }, "\u6279\u91CF\u5220\u9664"), downloadCallback && /*#__PURE__*/React.createElement(Button, {
+    onClick: handleDownload,
+    style: {
+      visibility: downloadCallback ? 'visible' : 'hidden',
+      marginLeft: 10
+    }
+  }, "\u6279\u91CF\u4E0B\u8F7D")), /*#__PURE__*/React.createElement("div", {
     className: "list-header-right"
   }, /*#__PURE__*/React.createElement(Input, {
     value: search,
@@ -2184,7 +2235,9 @@ var PageList = function PageList(_ref) {
       isNoOrder = _useActiveRoute.isNoOrder,
       isResume = _useActiveRoute.isResume,
       isHot = _useActiveRoute.isHot,
-      isSetTop = _useActiveRoute.isSetTop;
+      isSetTop = _useActiveRoute.isSetTop,
+      isReadonly = _useActiveRoute.isReadonly,
+      isBatchDownload = _useActiveRoute.isBatchDownload;
 
   var fetchPath = path !== null && path !== void 0 ? path : "".concat(apiPath, "/page");
   var tableList = useTableFetch(fetchPath);
@@ -2365,6 +2418,35 @@ var PageList = function PageList(_ref) {
       }(),
       onCancel: function onCancel() {}
     });
+  };
+
+  var handleBatchDownload = function handleBatchDownload() {
+    var selectedRowKeys = tableList.rowSelection.selectedRowKeys;
+
+    if (!selectedRowKeys.length) {
+      message.warn("\u8BF7\u5148\u9009\u62E9\u8981\u4E0B\u8F7D\u7684".concat(title));
+      return;
+    }
+
+    var data = tableList.dataSource.filter(function (item) {
+      return selectedRowKeys.includes(item.id);
+    }).map(function (item) {
+      var newItem = {};
+      columns.forEach(function (column) {
+        if (item[column.dataIndex]) {
+          newItem[column.title] = item[column.dataIndex];
+
+          if (column.isTime) {
+            newItem[column.title] = formatTime(item[column.dataIndex], timeFormat);
+          }
+        }
+      });
+      return newItem;
+    });
+    var worksheet = XLSX.utils.json_to_sheet(data);
+    var workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    XLSX.writeFile(workbook, 'DataSheet.xlsx');
   };
 
   var handleBatchPublish = function handleBatchPublish(isPublish) {
@@ -2659,7 +2741,11 @@ var PageList = function PageList(_ref) {
     setSelectedEntity();
   };
 
-  var finalColumns = [].concat(_toConsumableArray(listColumns), [actionRow]);
+  var finalColumns = _toConsumableArray(listColumns);
+
+  if (!isReadonly) {
+    finalColumns.push(actionRow);
+  }
 
   if (!isNoOrder) {
     finalColumns.unshift(tableOrder);
@@ -2670,17 +2756,18 @@ var PageList = function PageList(_ref) {
   }, /*#__PURE__*/React.createElement("div", {
     className: "page-list-title"
   }, title, "\u5217\u8868"), /*#__PURE__*/React.createElement(ListHeader, _extends({}, tableList, {
-    showAdd: !isResume && !isCompany || isCompany && !tableList.dataSource.length,
+    showAdd: !isResume && !isCompany && !isReadonly || isCompany && !tableList.dataSource.length,
     placeholder: "\u8BF7\u8F93\u5165\u67E5\u8BE2\u6761\u4EF6",
     addCallback: handleAdd,
     deleteCallback: showRowSelection ? handleBatchDelete : null,
+    downloadCallback: isBatchDownload ? handleBatchDownload : null,
     isBatchPublish: isBatchPublish,
     handleBatchPublish: handleBatchPublish
   })), /*#__PURE__*/React.createElement(CustomTable, _extends({}, tableList, {
     columns: finalColumns,
     rowKey: "id",
     size: "middle",
-    showRowSelection: showRowSelection
+    showRowSelection: showRowSelection || isBatchDownload
   })), selectedEntity && /*#__PURE__*/React.createElement(PageFormDrawer, {
     formItems: columns,
     onClose: handleClose,
